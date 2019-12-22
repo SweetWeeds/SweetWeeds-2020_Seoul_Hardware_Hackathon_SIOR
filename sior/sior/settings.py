@@ -25,7 +25,7 @@ SECRET_KEY = '##onj2j^*yr6@cp!@unnp=s@w9prt=w%+y-$@^ygh)0==6*v#g'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0','sior.koreasouth.cloudapp.azure.com']
+ALLOWED_HOSTS = ['0.0.0.0:8000','sior.koreasouth.cloudapp.azure.com']
 
 
 # Application definition
@@ -55,7 +55,7 @@ ROOT_URLCONF = 'sior.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'hat/templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'hat/templates'), os.path.join(BASE_DIR, 'accounts/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

@@ -3,7 +3,7 @@
 <html lang="kr">
 
 <head>
-  <link rel="stylesheet" href="text/css">
+  <link rel="stylesheet" type="text/css">
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -40,12 +40,12 @@
                   <div class="text-center">
                     <h1 class="h4 text-gray-900 mb-4">SIOR 안전Hat</h1>
                   </div>
-                  <form class="user">
+                  <form class="user" method="POST" action="{% url 'login'%}">
                     <div class="form-group">
-                      <input type="email" class="form-control form-control-user" id="exampleInputEmail" aria-describedby="emailHelp" placeholder="아이디">
+                      <input type="ID" class="form-control form-control-user" id="InputID" aria-describedby="IDHelp" placeholder="아이디">
                     </div>
                     <div class="form-group">
-                      <input type="password" class="form-control form-control-user" id="exampleInputPassword" placeholder="비밀번호">
+                      <input type="password" class="form-control form-control-user" id="InputPassword" placeholder="비밀번호">
                     </div>
                     <div class="form-group">
                       <div class="custom-control custom-checkbox small">
