@@ -19,6 +19,7 @@ import accounts.views, dashboard.views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', dashboard.views.home, name='home'),
+    path('', dashboard.views.isauth, name='isauth'),
+    path('home/', dashboard.views.home, name='home'),
     path('accounts/',include('accounts.urls'))
 ]

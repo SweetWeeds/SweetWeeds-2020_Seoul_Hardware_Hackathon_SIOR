@@ -2,11 +2,13 @@ from django.shortcuts import render
 from django.shortcuts import redirect
 
 # Create your views here.
-def home(request):
+def isauth(request):
     if request.user.is_authenticated:
-        print('auth')
-        return redirect('index')
+        #print('auth')
+        return redirect('home')
     else:
-        print('no')
+        #print('no')
         return redirect('accounts/login')
-    return redirect('index')
+
+def home(request):
+    return render(request, 'index.html')

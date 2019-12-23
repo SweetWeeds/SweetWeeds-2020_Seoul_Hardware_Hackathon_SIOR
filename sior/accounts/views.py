@@ -5,6 +5,9 @@ from django.contrib.auth.models import User
 from django.contrib import auth
 # Create your views here.
 
+def default(request):
+    return redirect('login')
+
 def login(request):
     if request.method == "POST":
         username = request.POST['InputID']
@@ -12,10 +15,13 @@ def login(request):
         user = auth.authenticate(request, username=username, password=password)
         if user is not None:
             auth.login(request, user)
+            print('인증')
             return redirect('home')
         else:
+            print('인증 실패')
             return render(request, 'login.html', {'error': 'username or password is incorrect'})
     else:
+        print('예외')
         return render(request, 'login.html', {})
 
 def register(request):
