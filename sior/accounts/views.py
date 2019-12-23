@@ -21,7 +21,6 @@ def login(request):
             print('인증 실패')
             return render(request, 'login.html', {'error': 'username or password is incorrect'})
     else:
-        print('예외')
         return render(request, 'login.html', {})
 
 def register(request):
@@ -31,7 +30,8 @@ def register(request):
                 username=request.POST["username"], password=request.POST["InputPassword"])
             auth.login(request, user)
             return redirect('home')
-    return render(request, 'register.html', {})
+    else:
+        return render(request, 'register.html', {})
 
 def logout(request):
     auth.logout(request)

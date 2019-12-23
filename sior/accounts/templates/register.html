@@ -33,27 +33,27 @@
           <div class="col-lg-7">
             <div class="p-5">
               <div class="text-center">
-                <h1 class="h4 text-gray-900 mb-4">Create an Account!</h1>
+                <h1 class="h4 text-gray-900 mb-4">회원가입</h1>
               </div>
               <form class="user" method="POST" action="{%url 'register'%}">
                 {% csrf_token %}
                 <div class="form-group row">
                   <div class="col-sm-6 mb-3 mb-sm-0">
-                    <input type="text" class="form-control form-control-user" id="FirstName" placeholder="First Name">
+                    <input type="text" class="form-control form-control-user" name="FirstName" id="FirstName" placeholder="First Name">
                   </div>
                   <div class="col-sm-6">
-                    <input type="text" class="form-control form-control-user" id="LastName" placeholder="Last Name">
+                    <input type="text" class="form-control form-control-user" name="LastName" id="LastName" placeholder="Last Name">
                   </div>
                 </div>
                 <div class="form-group">
-                  <input type="email" class="form-control form-control-user" id="InputEmail" placeholder="Email Address">
+                  <input type="ID" class="form-control form-control-user" id="ID" name="아이디" placeholder="Email Address">
                 </div>
                 <div class="form-group row">
                   <div class="col-sm-6 mb-3 mb-sm-0">
-                    <input type="password" class="form-control form-control-user" id="InputPassword" placeholder="Password">
+                    <input type="password" class="form-control form-control-user" id="Password" name="비밀번호" placeholder="Password">
                   </div>
                   <div class="col-sm-6">
-                    <input type="password" class="form-control form-control-user" id="RepeatPassword" placeholder="Repeat Password">
+                    <input type="password" class="form-control form-control-user" id="RepeatPassword" name="비밀번호 확인" placeholder="Repeat Password">
                   </div>
                 </div>
                 <a href="login.html" class="btn btn-primary btn-user btn-block">
@@ -83,14 +83,14 @@
   </div>
 
   <!-- Bootstrap core JavaScript-->
-  <script src="vendor/jquery/jquery.min.js"></script>
-  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+  <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
 
   <!-- Core plugin JavaScript-->
-  <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+  <script src="{% static 'vendor/jquery-easing/jquery.easing.min.js' %}"></script>
 
   <!-- Custom scripts for all pages-->
-  <script src="js/sb-admin-2.min.js"></script>
+  <script src="{% static 'js/sb-admin-2.min.js' %}"></script>
 
 </body>
 

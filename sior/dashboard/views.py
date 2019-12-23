@@ -11,4 +11,10 @@ def isauth(request):
         return redirect('accounts/login')
 
 def home(request):
-    return render(request, 'index.html')
+    if not request.user.is_authenticated:
+        return redirect('../accounts/login')
+    else:
+        return render(request, 'home.html', {})
+
+def location(request):
+    return render(request, 'location.html', {})

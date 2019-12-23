@@ -3,6 +3,7 @@ from django.db.models import DateTimeField
 MAX_LEN = 100
 
 # Create your models here.
+# worked by hangyeol
 class Hat(models.Model):
     id = models.AutoField(primary_key = True)
     user_name = models.CharField(max_length = 50)
