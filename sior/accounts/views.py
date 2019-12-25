@@ -16,7 +16,7 @@ def login(request):
         if user is not None:
             auth.login(request, user)
             print('인증')
-            return redirect('home')
+            return redirect('../../home')
         else:
             print('인증 실패')
             return render(request, 'login.html', {'error': 'username or password is incorrect'})
@@ -29,10 +29,10 @@ def register(request):
             user = User.objects.create_user(
                 username=request.POST["username"], password=request.POST["InputPassword"])
             auth.login(request, user)
-            return redirect('home')
+            return redirect('../home')
     else:
         return render(request, 'register.html', {})
 
 def logout(request):
     auth.logout(request)
-    return redirect('home')
+    return redirect('../home')

@@ -20,6 +20,6 @@ import accounts.views, dashboard.views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', dashboard.views.isauth, name='isauth'),
-    path('home/', dashboard.views.home, name='home'),
+    path('home/',include('dashboard.urls')),
     path('accounts/',include('accounts.urls'))
 ]

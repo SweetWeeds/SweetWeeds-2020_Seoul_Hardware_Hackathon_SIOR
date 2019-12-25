@@ -5,7 +5,7 @@ from django.shortcuts import redirect
 def isauth(request):
     if request.user.is_authenticated:
         #print('auth')
-        return redirect('home')
+        return redirect('../home')
     else:
         #print('no')
         return redirect('accounts/login')
@@ -18,3 +18,6 @@ def home(request):
 
 def location(request):
     return render(request, 'location.html', {})
+
+def hatico(request):
+    return render(request, '/img/hat.png')
