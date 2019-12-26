@@ -14,6 +14,7 @@
             <thead>
               <tr>
                 <th>이름</th>
+                <th>사원 번호</th>
                 <th>위치(주소)</th>
                 <th>위치(위도,경도)</th>
                 <th>직책</th>
@@ -24,6 +25,7 @@
             <tfoot>
               <tr>
                 <th>이름</th>
+                <th>사원 번호</th>
                 <th>위치(주소)</th>
                 <th>위치(위도,경도)</th>
                 <th>직책</th>
@@ -34,12 +36,20 @@
             <tbody>
             {% for Hat in Hats.all %}
               <tr>
-                <td>{{Hat.user_name}}</td>
-                <td>{{Hat.last_location_str}}</td>
-                <td>{{Hat.last_location_gps}}</td>
+                <td>
+                  {{Hat.user_name}}
+                </td>
+                <td>
+                  {{Hat.employee_id}}
+                </td>
+                <td id="{{Hat.id}}_loc">
+                </td>
+                <td>
+                  <input type="button" onclick="" value="{{Hat.last_location_gps_lat}}, {{Hat.last_location_gps_lng}}">
+                </td>
                 <td>{{Hat.job_position}}</td>
                 <td>{{Hat.phone_number}}</td>
-                <td>{{last_connect_date}}</td>
+                <td>{{Hat.last_connect_date|date:"r"}}</td>
               </tr>
             {% endfor %}
             </tbody>
@@ -58,6 +68,8 @@
 
   <!-- Page level custom scripts -->
   <script src="{% static 'js/demo/datatables-demo.js' %}"></script>
+  
+  <!-- 네이버 지도 스크립트 -->
   <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=ufen3b2lar"></script>
   <script>
     var position = new naver.maps.LatLng(37.29503524,126.9748767);
@@ -66,12 +78,39 @@
       zoom: 10
     };
     var map = new naver.maps.Map('map', mapOptions);
+  </script>
+  <script>
+    <!-- 지도 마커 -->
     {% for Hat in Hats.all %}
     var markerOptions = {
-      position: new naver.maps.LatLng({{Hat.last_location_gps}}),
+      position: new naver.maps.LatLng({{Hat.last_location_gps_lat}},{{Hat.last_location_gps_lng}}),
       map: map
     };
     var marker = new naver.maps.Marker(markerOptions);
+    {% endfor %}
+  </script>
+
+  <!-- 이동 스크립트 -->
+  <script>
+    
+  </script>
+  <!-- Geocode 서브 모듈 -->
+  <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?clientId=ufen3b2lar&submodules=geocoder"></script>
+  <script>
+    {% for Hat in Hats.all %}
+    naver.maps.Service.reverseGeocode({
+        location: new naver.maps.LatLng({{Hat.last_location_gps_lat}}, {{Hat.last_location_gps_lng}}),
+      }, function(status, response) {
+      if (status !== naver.maps.Service.Status.OK) {
+          return alert('Something wrong!');
+      }
+
+      var result = response.result, // 검색 결과의 컨테이너
+          items = result.items; // 검색 결과의 배열
+
+      // do Something
+      document.getElementById("{{Hat.id}}_loc").innerHTML = items["result"]["items"]["address"]
+    });
     {% endfor %}
   </script>
 {% endblock %}
