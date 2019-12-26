@@ -20,5 +20,5 @@ from . import views
 urlpatterns = [
     path('', views.home),
     path('location', views.location),
-    path('location/hat.png', views.hatico)
+    path('statistics', views.statistics)
 ]

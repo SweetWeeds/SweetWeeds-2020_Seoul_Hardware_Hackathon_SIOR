@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.shortcuts import redirect
+from .models import Hat
 
 # Create your views here.
 def isauth(request):
@@ -17,7 +18,9 @@ def home(request):
         return render(request, 'home.html', {})
 
 def location(request):
-    return render(request, 'location.html', {})
+    Hats = Hat.objects
+    return render(request, 'location.html', {'Hats': Hats})
 
-def hatico(request):
-    return render(request, '/img/hat.png')
+
+def statistics(request):
+    return render(request, 'statistics.html', {})
