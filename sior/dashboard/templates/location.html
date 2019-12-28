@@ -22,17 +22,6 @@
                 <th>마지막 연결 시각</th>
               </tr>
             </thead>
-            <tfoot>
-              <tr>
-                <th>이름</th>
-                <th>사원 번호</th>
-                <th>위치(주소)</th>
-                <th>위치(위도,경도)</th>
-                <th>직책</th>
-                <th>전화번호</th>
-                <th>마지막 연결 시각</th>
-              </tr>
-            </tfoot>
             <tbody>
             {% for Hat in Hats.all %}
               <tr>
@@ -45,7 +34,7 @@
                 <td id="{{Hat.id}}_loc">
                 </td>
                 <td>
-                  <input type="button" onclick="" value="{{Hat.last_location_gps_lat}}, {{Hat.last_location_gps_lng}}">
+                  <input id="to-loc_{{Hat.id}}" class="btn btn-primary" type="button" onclick="" value="{{Hat.last_location_gps_lat}}, {{Hat.last_location_gps_lng}}">
                 </td>
                 <td>{{Hat.job_position}}</td>
                 <td>{{Hat.phone_number}}</td>
@@ -102,15 +91,22 @@
         location: new naver.maps.LatLng({{Hat.last_location_gps_lat}}, {{Hat.last_location_gps_lng}}),
       }, function(status, response) {
       if (status !== naver.maps.Service.Status.OK) {
-          return alert('Something wrong!');
+        return alert('Something wrong!');
       }
 
       var result = response.result, // 검색 결과의 컨테이너
           items = result.items; // 검색 결과의 배열
-
       // do Something
-      document.getElementById("{{Hat.id}}_loc").innerHTML = items["result"]["items"]["address"]
+      document.getElementById("{{Hat.id}}_loc").innerHTML = items[0].address
     });
+
+    $("#to-loc_{{Hat.id}}").on("click", function(e) {
+      e.preventDefault();
+      var loc_{{Hat.id}} = new naver.maps.LatLng({{Hat.last_location_gps_lat}}, {{Hat.last_location_gps_lng}})
+      map.setCenter(loc_{{Hat.id}});
+    });
+  
+
     {% endfor %}
   </script>
 {% endblock %}

@@ -14,10 +14,13 @@ def isauth(request):
 
 def home(request):
     SensorValues = SensorValue.objects
+    max_temperature = SensorValue.objects.all().aggregate(Max('temperature'))
+    max_voc = SensorValue.objects.all().aggregate(Max('voc'))
+    max_humid = SensorValue.objects.all().aggregate(Max('humid'))
     if not request.user.is_authenticated:
         return redirect('../accounts/login')
     else:
-        return render(request, 'home.html', {'SensorValues' : SensorValues})
+        return render(request, 'home.html', {'SensorValues' : SensorValues, 'max_temperature' : max_temperature, 'max_voc' : max_voc, 'max_humid' : max_humid})
 
 
 def location(request):
@@ -28,7 +31,11 @@ def location(request):
 def statistics(request):
     SensorValues = SensorValue.objects
     max_temperature = SensorValue.objects.all().aggregate(Max('temperature'))
-    return render(request, 'statistics.html', {'SensorValues' : SensorValues})
+    max_voc = SensorValue.objects.all().aggregate(Max('voc'))
+    max_humid = SensorValue.objects.all().aggregate(Max('humid'))
+    
+    return render(request, 'statistics.html', {'SensorValues' : SensorValues, 'max_temperature' : max_temperature, 'max_voc' : max_voc, 'max_humid' : max_humid})
+
 
 ''' 혁수가 보기 편할려고 추가함.
     class Hat(models.Model):
