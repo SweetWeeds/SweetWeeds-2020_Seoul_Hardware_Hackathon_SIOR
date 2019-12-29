@@ -36,6 +36,33 @@
       </div>
     </div>
 
+
+<!-- 프랑켄슈타인 실험실, 지우고 싶을 때 지워라.... -->
+<div class="col-xl-3 col-md-6 mb-4">
+  <div class="card border-left-success shadow h-100 py-2">
+    <div class="card-body">
+      <div class="box">
+        <article class="media">
+            <div class="media-left">
+                <figure class="image is-50x50">
+                    <img src="http://openweathermap.org/img/w/{{ weather.icon }}.png" alt="Image">
+                </figure>
+            </div>
+            <div class="media-content">
+                <div class="content">
+                    <p>
+                        <span class="title"><b>공사장 날씨</b></span>
+                        <br>
+                        <span class="subtitle"><b>{{ weather.temperature }}&#xB0; C</b></span>
+                        <br> <b>{{ weather.description }}</b>
+                    </p>
+                </div>
+            </div>
+        </article>
+      </div>
+    </div>
+  </div>
+</div>
     <!-- Earnings (Monthly) Card Example -->
     <div class="col-xl-3 col-md-6 mb-4">
       <div class="card border-left-success shadow h-100 py-2">
@@ -52,7 +79,7 @@
         </div>
       </div>
     </div>
-
+    
     <!-- 작업 진행률 -->
     <div class="col-xl-3 col-md-6 mb-4">
       <div class="card border-left-info shadow h-100 py-2">

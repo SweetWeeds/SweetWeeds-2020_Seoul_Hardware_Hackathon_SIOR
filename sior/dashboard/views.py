@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.shortcuts import redirect
 from .models import Hat, SensorValue
 from django.db.models import Max
+import requests
 
 # Create your views here.
 def isauth(request):
@@ -13,6 +14,19 @@ def isauth(request):
         return redirect('accounts/login')
 
 def home(request):
+    #여기부터 날씨 때문에 추가함.
+    url = 'http://api.openweathermap.org/data/2.5/weather?q={}&units=imperial&appid=08a543cc6623032ae7fe6365a5c9b994'
+    city = 'Republic of Korea'
+    city_weather = requests.get(url.format(city)).json() #request the API data and convert the JSON to Python data types
+
+    weather = {
+        'city' : city,
+        'temperature' : round((city_weather['main']['temp']-32)*(5/9),2), #섭씨 -> 화씨 (0°F − 32) × 5/9 
+        'description' : city_weather['weather'][0]['description'],
+        'icon' : city_weather['weather'][0]['icon']
+    }
+    #여기까지 내가 추가함.
+
     SensorValues = SensorValue.objects
     max_temperature = SensorValue.objects.all().aggregate(Max('temperature'))
     max_voc = SensorValue.objects.all().aggregate(Max('voc'))
@@ -20,12 +34,22 @@ def home(request):
     if not request.user.is_authenticated:
         return redirect('../accounts/login')
     else:
-        return render(request, 'home.html', {'SensorValues' : SensorValues, 'max_temperature' : max_temperature, 'max_voc' : max_voc, 'max_humid' : max_humid})
+        return render(request, 'home.html', {'SensorValues' : SensorValues, 'weather' : weather, 'max_temperature' : max_temperature, 'max_voc' : max_voc, 'max_humid' : max_humid})
 
 
 def location(request):
     Hats = Hat.objects
-    return render(request, 'location.html', {'Hats': Hats})
+    url = 'http://api.openweathermap.org/data/2.5/weather?q={}&units=imperial&appid=08a543cc6623032ae7fe6365a5c9b994'
+    city = 'Republic of Korea'
+    city_weather = requests.get(url.format(city)).json() #request the API data and convert the JSON to Python data types
+
+    weather = {
+        'city' : city,
+        'temperature' : round((city_weather['main']['temp']-32)*(5/9),2), #섭씨 -> 화씨 (0°F − 32) × 5/9 
+        'description' : city_weather['weather'][0]['description'],
+        'icon' : city_weather['weather'][0]['icon']
+    }
+    return render(request, 'location.html', {'weather' : weather, 'Hats': Hats})
 
 
 def statistics(request):
@@ -33,8 +57,17 @@ def statistics(request):
     max_temperature = SensorValue.objects.all().aggregate(Max('temperature'))
     max_voc = SensorValue.objects.all().aggregate(Max('voc'))
     max_humid = SensorValue.objects.all().aggregate(Max('humid'))
-    
-    return render(request, 'statistics.html', {'SensorValues' : SensorValues, 'max_temperature' : max_temperature, 'max_voc' : max_voc, 'max_humid' : max_humid})
+    url = 'http://api.openweathermap.org/data/2.5/weather?q={}&units=imperial&appid=08a543cc6623032ae7fe6365a5c9b994'
+    city = 'Republic of Korea'
+    city_weather = requests.get(url.format(city)).json() #request the API data and convert the JSON to Python data types
+
+    weather = {
+        'city' : city,
+        'temperature' : round((city_weather['main']['temp']-32)*(5/9),2), #섭씨 -> 화씨 (0°F − 32) × 5/9 
+        'description' : city_weather['weather'][0]['description'],
+        'icon' : city_weather['weather'][0]['icon']
+    }
+    return render(request, 'statistics.html', {'SensorValues' : SensorValues, 'weather' : weather, 'max_temperature' : max_temperature, 'max_voc' : max_voc, 'max_humid' : max_humid})
 
 
 ''' 혁수가 보기 편할려고 추가함.

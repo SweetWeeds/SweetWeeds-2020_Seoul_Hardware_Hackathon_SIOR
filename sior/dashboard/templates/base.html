@@ -152,6 +152,26 @@
           </div>
         </form>
         <!-- Topbar Navbar -->
+        <div class="box">
+          <article class="media">
+              <div class="media-left">
+                  <figure class="image is-50x50">
+                      <img src="http://openweathermap.org/img/w/{{ weather.icon }}.png" alt="Image">
+                  </figure>
+              </div>
+              <div class="media-content">
+                  <div class="content">
+                      <p>
+                          <br>
+                          <span class="title" ><b>공사장 날씨</b>&nbsp&nbsp</span>
+                          <!--{{ weather.city }} -->
+                          <span class="subtitle"><b>{{ weather.temperature }}&#xB0;C&nbsp&nbsp</b></span>
+                           <b>{{ weather.description }}</b>
+                      </p>
+                  </div>
+              </div>
+          </article>
+        </div>
         <ul class="navbar-nav ml-auto">
           <!-- Nav Item - Search Dropdown (Visible Only XS) -->
           <li class="nav-item dropdown no-arrow d-sm-none">
