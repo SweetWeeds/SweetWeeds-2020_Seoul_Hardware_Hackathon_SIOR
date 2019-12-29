@@ -32,13 +32,19 @@
 
         <div class="card o-hidden border-0 shadow-lg my-5">
           <div class="card-body p-0">
-            <!-- Nested Row within Card Body -->
+            <!--class="col-lg-6 d-none d-lg-block bg-login-image" Nested Row within Card Body -->
             <div class="row">
               <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
               <div class="col-lg-6">
                 <div class="p-5">
                   <div class="text-center">
-                    <h1 class="h4 text-gray-900 mb-4">SIOR 안전Hat</h1>
+                    <div style="float: left; width: 33%;" target="_blank" href="/sior/dashboard/templates/img/hat.png" >
+                      <img src="https://ifh.cc/g/OAHlb.png" alt="Sorssy" width="65" height="65">
+                      </div>
+                    <h1 style="float: left; width: 33%;" class="h4 text-gray-900 mb-4">SIOR 안전Hat</h1>
+                    <div style="float: left; width: 33%;" target="_blank" href="/sior/dashboard/templates/img/hat.png" >
+                      <img src="https://cdn.pixabay.com/photo/2013/07/12/16/27/safety-helmet-150913_960_720.png" alt="Sorssy" width="40" height="40">
+                      </div>
                   </div>
                   <form class="user" method="POST" action="{%url 'login'%}">
                     {% csrf_token %}
