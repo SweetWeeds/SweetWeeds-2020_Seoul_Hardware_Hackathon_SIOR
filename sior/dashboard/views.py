@@ -36,6 +36,12 @@ def home(request):
     else:
         return render(request, 'home.html', {'SensorValues' : SensorValues, 'weather' : weather, 'max_temperature' : max_temperature, 'max_voc' : max_voc, 'max_humid' : max_humid})
 
+def oauth(request): #for kakao api
+    code = request.GET['code']
+    print('code = ' + str(code))
+
+    return redirect('../home')
+
 
 def location(request):
     Hats = Hat.objects

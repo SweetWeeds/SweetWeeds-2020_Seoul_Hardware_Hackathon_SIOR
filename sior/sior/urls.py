@@ -15,11 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-import accounts.views, dashboard.views
+import accounts.views, dashboard.views, webhook.views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', dashboard.views.isauth, name='isauth'),
     path('home/',include('dashboard.urls')),
-    path('accounts/',include('accounts.urls'))
+    path('accounts/',include('accounts.urls')),
+    path('webhook/', webhook.views.webhook, name='webhook')
 ]

@@ -1,18 +1,46 @@
-import requests
+# ---------------------------------------------------------------------------
+# Pelion Device Management SDK
+# (C) COPYRIGHT 2017 Arm Limited
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# --------------------------------------------------------------------------
+"""Example showing basic usage of the webhook functionality."""
+from mbed_cloud import ConnectAPI
+import time
 
-URL = 'https://api.us-east-1.mbedcloud.com/v2'
-API_KEY = 'ak_1MDE2ZjA3Zjk1NWEzYWUzY2U2MGZlZWU4MDAwMDAwMDA016f084eb876925aab47482d0000000088LlSQgw7Yq2b8r8M260VQhbZn17bCqu'
-DEVICE_ID = ['016f46e17b5f000000000001001e59dc']
+BUTTON_RESOURCE = "/5002/0/1"
 
-class PelionSync:
-    def PostValue():
-        return 
-    def GetValue():
-        return val
-headers = {
-    'Authorization': 'Bearer {}'.format(),
-}
 
-response = requests.get('https://api.us-east-1.mbedcloud.com/v2/endpoints/', headers=headers)
+def _main():
+    api = ConnectAPI()
+    devices = api.list_connected_devices().data
+    if len(devices) == 0:
+        raise Exception("No endpints registered. Aborting")
+    # Delete device subscriptions
+    api.delete_device_subscriptions(devices[0].id)
+    # First register to webhook
+    api.update_webhook("http://sior.koreasouth.cloudapp.azure.com:8000/webhook/")
+    time.sleep(2)
+    api.add_resource_subscription(devices[0].id, BUTTON_RESOURCE)
+    while True:
+        print("Webhook registered. Listening to button updates for 10 seconds...")
 
-print(response.text)
+        time.sleep(10)
+        break
+
+    api.delete_webhook()
+    print("Deregistered and unsubscribed from all resources. Exiting.")
+
+
+if __name__ == '__main__':
+    _main()
