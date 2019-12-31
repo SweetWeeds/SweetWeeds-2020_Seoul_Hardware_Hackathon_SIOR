@@ -12,13 +12,20 @@
       <img src="https://cdn.pixabay.com/photo/2013/07/12/16/27/safety-helmet-150913_960_720.png" alt="Sorssy" width="40" height="40">
       </div>
     <h1 class="h3 mb-0 text-gray-800">안전Hat 관리페이지</h1>
-    <a href="{% url 'kakao_alert' %}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-        class="fas fa-download fa-sm text-white-50"></i> 보고서 생성</a>
+      
+    <!-- Nav Item - User Information -->
+      <nav class="navbar">
+        <div class="dropdown-item" href="#" data-toggle="modal" data-target="#emergencyModal">
+          <span class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm">비상신호 전송</span>
+        </div>
+      
+      </nav>
+
+
   </div>
 
   <!-- Content Row -->
   <div class="row">
-
     <!-- 현재 동작중인 헬멧 수 -->
     <div class="col-xl-3 col-md-6 mb-4">
       <div class="card border-left-primary shadow h-100 py-2">

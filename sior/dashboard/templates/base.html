@@ -58,24 +58,18 @@
 
     <!-- 센서 통계 -->
     <li class="nav-item">
-      <a class="nav-link" href="statistics">
+      <a class="nav-link" href="/home/statistics">
         <i class="fas fa-fw fa-chart-area"></i>
         <span>센서 통계</span></a>
     </li>
 
     <!-- 위치 -->
     <li class="nav-item">
-      <a class="nav-link" href="location">
+      <a class="nav-link" href="/home/location">
         <i class="fas fa-fw fa-table"></i>
         <span>위치</span></a>
     </li>
 
-    <!-- 로그 -->
-    <li class="nav-item">
-      <a class="nav-link" href="log">
-        <i class="fas fa-fw fa-table"></i>
-        <span>로그</span></a>
-    </li>
 
     <!-- Divider -->
     <hr class="sidebar-divider d-none d-md-block">
@@ -94,10 +88,7 @@
       </a>
       <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
         <div class="bg-white py-2 collapse-inner rounded">
-          <a class="collapse-item" href="device_list">헬멧</a>
-          <a class="collapse-item" href="">Borders</a>
-          <a class="collapse-item" href="utilities-animation.html">Animations</a>
-          <a class="collapse-item" href="utilities-other.html">Other</a>
+          <a class="collapse-item" href="device_list">장비 목록</a>
         </div>
       </div>
     </li>
@@ -371,6 +362,26 @@
     </div>
 
   </div>
+  <!-- 프랑켄슈타인 emergencyModal-->
+  <div class="modal fade" id="emergencyModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">대피 신호</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">비상 신호를 보내시겠습니까?</div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">취소</button>
+          <a class="btn btn-danger" href="{% url 'kakao_alert' %}">발송</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <!-- 프랑켄슈타인-->
   <!-- Bootstrap core JavaScript-->
   <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
   <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>

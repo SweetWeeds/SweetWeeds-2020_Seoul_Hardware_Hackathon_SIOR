@@ -19,7 +19,10 @@ from . import views
 urlpatterns = [
     path('', views.home),
     path('location', views.location),
+    path('alert', views.alert),
     path('statistics', views.statistics),
     path('oauth/', views.oauth, name='oauth'), #added for kakao
     path('kakao_alert', views.kakao_alert, name='kakao_alert'),
+    path('device_list', views.device_list, name='device_list'),
+    path('device_list/<int:hat_id>/', views.device_info, name='device_info'),
 ]

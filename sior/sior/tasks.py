@@ -69,9 +69,9 @@ def sync():
             distance = sync.api.get_resource_value(device.id, "/3330/0/5700"), \
             gyroX = sync.api.get_resource_value(device.id, "/3334/0/5702"), \
             gyroY = sync.api.get_resource_value(device.id, "/3334/0/5703"), \
-            gyroZ = sync.api.get_resource_value(device.id, "/3334/0/5704") \
-            #gps_lat = sync.api.get_resource_value(device.id, "/3336/0/5702"), \
-            #gps_lng = sync.api.get_resource_value(device.id, "/3336/0/5703"), \
+            gyroZ = sync.api.get_resource_value(device.id, "/3334/0/5704"), \
+            gps_lat = 37.29503524, \
+            gps_lng = 126.9748767, \
             #gps_alt = sync.api.get_resource_value(device.id, "/3336/0/5704"), \
             #voc = sync.api.get_resource_value(device.id, "/10313/0/5700"), \
             #air_quality = sync.api.get_resource_value(device.id, "/10313/0/5701"), \

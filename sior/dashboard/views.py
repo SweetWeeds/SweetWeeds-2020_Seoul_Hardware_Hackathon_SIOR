@@ -62,7 +62,7 @@ def oauth(request): #for kakao api
 
     user_profile_info_uri = "https://kapi.kakao.com/v1/api/talk/profile?access_token="
     user_profile_info_uri += str(access_token)
- 
+    #user_json_data 이걸 저장해서 가지고 있어야 함.
     user_profile_info_uri_data = requests.get(user_profile_info_uri)
     user_json_data = user_profile_info_uri_data.json()
     nickName = user_json_data['nickName']
@@ -73,49 +73,49 @@ def oauth(request): #for kakao api
     print("profileImageURL = " + str(profileImageURL))
     print("thumbnailURL = " + str(thumbnailURL))
 
-
     template_dict_data = str({
-    "object_type": "feed",
-    "content": {
-        "title": "긴급상황 발생!!!",
-        "description": "공사장 내 긴급상황 발생, 즉시 이탈할것",
-        "image_url": "https://cdn.pixabay.com/photo/2013/06/09/09/07/explosion-123690_1280.jpg",
-        "image_width": 640,
-        "image_height": 640,
-        "link": {
-            "web_url": "http://www.daum.net",
-            "mobile_web_url": "http://m.daum.net",
-            "android_execution_params": "contentId=100",
-            "ios_execution_params": "contentId=100"
-        }
-    },
-    
-    "social": {
-        "like_count": 100,
-        "comment_count": 200,
-        "shared_count": 300,
-        "view_count": 400,
-        "subscriber_count": 500
-        
-    },
-    
-    "buttons": [
-           {
-            "title": "공사장 상황확인",
+        "object_type": "feed",
+        "content": {
+            "title": "긴급상황 발생!!!",
+            "description": "공사장 내 긴급상황 발생, 즉시 이탈할것",
+            "image_url": "https://cdn.pixabay.com/photo/2013/06/09/09/07/explosion-123690_1280.jpg",
+            "image_width": 640,
+            "image_height": 640,
             "link": {
                 "web_url": "http://www.daum.net",
-                "mobile_web_url": "http://m.daum.net"
-              }
+                "mobile_web_url": "http://m.daum.net",
+                "android_execution_params": "contentId=100",
+                "ios_execution_params": "contentId=100"
+            }
+        },
+        
+        "social": {
+            "like_count": 100,
+            "comment_count": 200,
+            "shared_count": 300,
+            "view_count": 400,
+            "subscriber_count": 500
+            
+        },
+        
+        "buttons": [
+            {
+                "title": "공사장 상황확인",
+                "link": {
+                    "web_url": "http://www.daum.net",
+                    "mobile_web_url": "http://m.daum.net"
+                }
             },
             {
-              "title": "앱으로 이동",
-               "link": {
-                  "android_execution_params": "contentId=100",
-                   "ios_execution_params": "contentId=100"
+                "title": "앱으로 이동",
+                "link": {
+                    "android_execution_params": "contentId=100",
+                    "ios_execution_params": "contentId=100"
                 }
-          }
+            }
         ]
     })
+    
     kakao_to_me_uri = 'https://kapi.kakao.com/v2/api/talk/memo/default/send'
     headers = {
         'Content-Type': "application/x-www-form-urlencoded",
@@ -133,7 +133,7 @@ def oauth(request): #for kakao api
 
 def kakao_alert(request):
     login_request_uri = 'https://kauth.kakao.com/oauth/authorize?'
- 
+
     client_id = '2a681354f8c8188ede46e69db97dcaaa'
     redirect_uri = 'http://sior.koreasouth.cloudapp.azure.com:8000/home/oauth/'
  
@@ -147,6 +147,7 @@ def kakao_alert(request):
 
 def location(request):
     Hats = Hat.objects
+    SensorValues = SensorValue.objects
     url = 'http://api.openweathermap.org/data/2.5/weather?q={}&units=imperial&appid=08a543cc6623032ae7fe6365a5c9b994'
     city = 'Republic of Korea'
     city_weather = requests.get(url.format(city)).json() #request the API data and convert the JSON to Python data types
@@ -157,14 +158,16 @@ def location(request):
         'description' : city_weather['weather'][0]['description'],
         'icon' : city_weather['weather'][0]['icon']
     }
-    return render(request, 'location.html', {'weather' : weather, 'Hats': Hats})
+    return render(request, 'location.html', {'weather' : weather, 'Hats': Hats, 'SensorValues':SensorValues})
 
+def alert(request):
+    return render(request, 'alert.html')
 
 def statistics(request):
-    SensorValues = SensorValue.objects
-    max_temperature = SensorValue.objects.all().aggregate(Max('temperature'))
-    max_voc = SensorValue.objects.all().aggregate(Max('voc'))
-    max_humid = SensorValue.objects.all().aggregate(Max('humid'))
+    SensorValues = SensorValue.objects.order_by('-recordtime')[:10]
+    max_temperature = SensorValue.objects.aggregate(Max('temperature'))
+    max_voc = SensorValue.objects.aggregate(Max('voc'))
+    max_humid = SensorValue.objects.aggregate(Max('humid'))
     url = 'http://api.openweathermap.org/data/2.5/weather?q={}&units=imperial&appid=08a543cc6623032ae7fe6365a5c9b994'
     city = 'Republic of Korea'
     city_weather = requests.get(url.format(city)).json() #request the API data and convert the JSON to Python data types
@@ -177,6 +180,13 @@ def statistics(request):
     }
     return render(request, 'statistics.html', {'SensorValues' : SensorValues, 'weather' : weather, 'max_temperature' : max_temperature, 'max_voc' : max_voc, 'max_humid' : max_humid})
 
+def device_list(request):
+    Hats = Hat.objects
+    return render(request, 'device_list.html', {'Hats':Hats})
+
+def device_info(request, hat_id):
+    hat = Hat.objects.filter(id = hat_id)
+    return render(request, 'device_info.html', {'hat_id':hat})
 
 ''' 혁수가 보기 편할려고 추가함.
     class Hat(models.Model):

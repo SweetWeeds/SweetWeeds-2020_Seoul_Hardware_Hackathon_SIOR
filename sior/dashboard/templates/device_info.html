@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+{% load static %}
+{% load extra_filter %}
+{% block title %}안전 Hat - 장비정보 - {% endblock %}
+  <!-- Custom styles for this page -->
+  <link href="{% static 'vendor/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet">
+{% block content %}
+    <div class="card shadow mb-4">
+      <!-- 지도 표시부 -->
+      
+    <!-- DataTales Example -->
+    <div class="signup-img">
+        <img src="images/form-img.jpg" alt="">
+        <div class="signup-img-content">
+            <h2>Register now </h2>
+            <p>while seats are available !</p>
+        </div>
+    </div>
+    <div class="signup-form">
+        <form method="POST" class="register-form" id="register-form">
+            <div class="form-row">
+                <div class="form-group">
+                    <div class="form-input">
+                        <label for="first_name" class="required">First name</label>
+                        <input type="text" name="first_name" id="first_name" />
+                    </div>
+                    <div class="form-input">
+                        <label for="last_name" class="required">Last name</label>
+                        <input type="text" name="last_name" id="last_name" />
+                    </div>
+                    <div class="form-input">
+                        <label for="company" class="required">Company</label>
+                        <input type="text" name="company" id="company" />
+                    </div>
+                    <div class="form-input">
+                        <label for="email" class="required">Email</label>
+                        <input type="text" name="email" id="email" />
+                    </div>
+                    <div class="form-input">
+                        <label for="phone_number" class="required">Phone number</label>
+                        <input type="text" name="phone_number" id="phone_number" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="form-select">
+                        <div class="label-flex">
+                            <label for="meal_preference">meal preference</label>
+                            <a href="#" class="form-link">Lunch detail</a>
+                        </div>
+                        <div class="select-list">
+                            <select name="meal_preference" id="meal_preference">
+                                <option value="Vegetarian">Vegetarian</option>
+                                <option value="Kosher">Kosher</option>
+                                <option value="Asian Vegetarian">Asian Vegetarian</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-radio">
+                        <div class="label-flex">
+                            <label for="payment">Payment Mode</label>
+                            <a href="#" class="form-link">Payment Detail</a>
+                        </div>
+                        <div class="form-radio-group">            
+                            <div class="form-radio-item">
+                                <input type="radio" name="payment" id="cash" checked>
+                                <label for="cash">Cash</label>
+                                <span class="check"></span>
+                            </div>
+                            <div class="form-radio-item">
+                                <input type="radio" name="payment" id="cheque">
+                                <label for="cheque">Cheque</label>
+                                <span class="check"></span>
+                            </div>
+                            <div class="form-radio-item">
+                                <input type="radio" name="payment" id="demand">
+                                <label for="demand">Demand Draf</label>
+                                <span class="check"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-input">
+                        <label for="chequeno">DD / Cheque No.</label>
+                        <input type="text" name="chequeno" id="chequeno" />
+                    </div>
+                    <div class="form-input">
+                        <label for="blank_name">Drawn on ( Bank Name)</label>
+                        <input type="text" name="blank_name" id="blank_name" />
+                    </div>
+                    <div class="form-input">
+                        <label for="payable">Payable at</label>
+                        <input type="text" name="payable" id="payable" />
+                    </div>
+                </div>
+            </div>
+            <div class="donate-us">
+                <label>Donate us</label>
+                <div class="price_slider ui-slider ui-slider-horizontal">
+                    <div id="slider-margin"></div>
+                    <span class="donate-value" id="value-lower"></span>
+                </div>
+            </div>
+            <div class="form-submit">
+                <input type="submit" value="Submit" class="submit" id="submit" name="submit" />
+                <input type="submit" value="Reset" class="submit" id="reset" name="reset" />
+            </div>
+        </form>
+    </div>
+    
+
+
+{% endblock %}
+{% block javascript %}
+  <!-- Page level plugins -->
+  <script src="{% static 'vendor/datatables/jquery.dataTables.min.js' %}"></script>
+  <script src="{% static 'vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
+
+  <!-- Page level custom scripts -->
+  <script src="{% static 'js/demo/datatables-demo.js' %}"></script>
+  
+  <!-- 네이버 지도 스크립트 -->
+  <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=ufen3b2lar"></script>
+  <script>
+    var position = new naver.maps.LatLng({{0|get_last_pos|safe}});
+    var mapOptions = {
+      center: position,
+      zoom: 10
+    };
+    var map = new naver.maps.Map('map', mapOptions);
+  </script>
+  <script>
+    <!-- 지도 마커 -->
+    {% for Hat in Hats.all %}
+    var markerOptions = {
+      position: new naver.maps.LatLng({{Hat|get_last_pos|safe}}),
+      map: map
+    };
+    var marker = new naver.maps.Marker(markerOptions);
+    {% endfor %}
+  </script>
+
+  <!-- 이동 스크립트 -->
+  <script>
+    
+  </script>
+  <!-- Geocode 서브 모듈 -->
+  <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?clientId=ufen3b2lar&submodules=geocoder"></script>
+  <script>
+    {% for Hat in Hats.all %}
+    naver.maps.Service.reverseGeocode({
+        location: new naver.maps.LatLng({{Hat|get_last_pos|safe}}),
+      }, function(status, response) {
+      if (status !== naver.maps.Service.Status.OK) {
+        return alert('Something wrong!');
+      }
+
+      var result = response.result, // 검색 결과의 컨테이너
+          items = result.items; // 검색 결과의 배열
+      // do Something
+      document.getElementById("{{Hat.id}}_loc").innerHTML = items[0].address
+    });
+
+    $("#to-loc_{{Hat.id}}").on("click", function(e) {
+      e.preventDefault();
+      var loc_{{Hat.id}} = new naver.maps.LatLng({{Hat|get_last_pos|safe}})
+      map.setCenter(loc_{{Hat.id}});
+    });
+  
+
+    {% endfor %}
+  </script>
+{% endblock %}

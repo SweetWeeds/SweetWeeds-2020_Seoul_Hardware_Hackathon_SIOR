@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load extra_filter %}
 {% block title %}안전 Hat - 위치{% endblock %}
   <!-- Custom styles for this page -->
   <link href="{% static 'vendor/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet">
@@ -26,7 +27,7 @@
             {% for Hat in Hats.all %}
               <tr>
                 <td>
-                  {{Hat.user_name}}
+                  <a href='device_list/{{Hat.id}}'>{{Hat.user_name}}</a>
                 </td>
                 <td>
                   {{Hat.employee_id}}
@@ -34,7 +35,7 @@
                 <td id="{{Hat.id}}_loc">
                 </td>
                 <td>
-                  <input id="to-loc_{{Hat.id}}" class="btn btn-primary" type="button" onclick="" value="{{Hat.last_location_gps_lat}}, {{Hat.last_location_gps_lng}}">
+                  <input id="to-loc_{{Hat.id}}" class="btn btn-primary" type="button" onclick="" value="{{Hat|get_last_pos|safe}}">
                 </td>
                 <td>{{Hat.job_position}}</td>
                 <td>{{Hat.phone_number}}</td>
@@ -61,7 +62,7 @@
   <!-- 네이버 지도 스크립트 -->
   <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=ufen3b2lar"></script>
   <script>
-    var position = new naver.maps.LatLng(37.29503524,126.9748767);
+    var position = new naver.maps.LatLng({{0|get_last_pos|safe}});
     var mapOptions = {
       center: position,
       zoom: 10
@@ -72,8 +73,15 @@
     <!-- 지도 마커 -->
     {% for Hat in Hats.all %}
     var markerOptions = {
-      position: new naver.maps.LatLng({{Hat.last_location_gps_lat}},{{Hat.last_location_gps_lng}}),
-      map: map
+      position: new naver.maps.LatLng({{Hat|get_last_pos|safe}}),
+      map: map,
+      icon: {
+        url: 'http://sior.koreasouth.cloudapp.azure.com:8000/media/hat.png',
+        size: new naver.maps.Size(34, 34),
+        scaledSize: new naver.maps.Size(34, 34),
+        origin: new naver.maps.Point(0, 0),
+        anchor: new naver.maps.Point(12, 34)
+      }
     };
     var marker = new naver.maps.Marker(markerOptions);
     {% endfor %}
@@ -88,7 +96,7 @@
   <script>
     {% for Hat in Hats.all %}
     naver.maps.Service.reverseGeocode({
-        location: new naver.maps.LatLng({{Hat.last_location_gps_lat}}, {{Hat.last_location_gps_lng}}),
+        location: new naver.maps.LatLng({{Hat|get_last_pos|safe}}),
       }, function(status, response) {
       if (status !== naver.maps.Service.Status.OK) {
         return alert('Something wrong!');
@@ -102,7 +110,7 @@
 
     $("#to-loc_{{Hat.id}}").on("click", function(e) {
       e.preventDefault();
-      var loc_{{Hat.id}} = new naver.maps.LatLng({{Hat.last_location_gps_lat}}, {{Hat.last_location_gps_lng}})
+      var loc_{{Hat.id}} = new naver.maps.LatLng({{Hat|get_last_pos|safe}})
       map.setCenter(loc_{{Hat.id}});
     });
   

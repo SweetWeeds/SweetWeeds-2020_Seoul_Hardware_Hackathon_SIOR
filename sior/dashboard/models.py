@@ -38,5 +38,8 @@ class SensorValue(models.Model):
     air_quality = models.FloatField(null = True, blank = True)
     
 
-
-#max_temperature = SensorValue.objects.all().aggregate(Max('temperature'))
+class Photo(models.Model):
+    image = models.ImageField(upload_to='sior/static')
+    filtered_image = models.ImageField(upload_to='%Y/%m/%d/filtered')
+    content = models.TextField(max_length=500, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
