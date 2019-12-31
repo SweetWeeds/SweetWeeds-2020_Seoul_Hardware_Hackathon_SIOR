@@ -24,8 +24,8 @@ def debug_task(self):
 
 app.conf.beat_schedule = {
     'sync': {
-        'task': 'sync',
-        'schedule': 1000.0, # 30초마다
+        'task': 'sior.tasks.sync',
+        'schedule': 10.0, # 10초마다
         'args': ()
     },
 }

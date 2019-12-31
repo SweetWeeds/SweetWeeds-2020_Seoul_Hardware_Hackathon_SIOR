@@ -21,21 +21,21 @@ class Hat(models.Model):
 class SensorValue(models.Model):
     owner = models.ForeignKey(Hat, on_delete=models.CASCADE)        # 센서 값 소유자
     recordtime = models.DateTimeField(auto_now_add=True)            # 센서 값 기록 시간
-    temperature = models.IntegerField(null = True, blank = True)    # 온도 값
-    humid = models.IntegerField(null = True, blank = True)          # 습도 값
-    accelX = models.IntegerField(null = True, blank = True)
-    accelY = models.IntegerField(null = True, blank = True)
-    accelZ = models.IntegerField(null = True, blank = True)
-    pressure = models.IntegerField(null = True, blank = True)
-    distance = models.IntegerField(null = True, blank = True)
-    gyroX = models.IntegerField(null = True, blank = True)
-    gyroY = models.IntegerField(null = True, blank = True)
-    gyroZ = models.IntegerField(null = True, blank = True)
-    gps_lat = models.CharField(max_length = MAX_LEN, null = True, blank = True)
-    gps_lng = models.CharField(max_length = MAX_LEN, null = True, blank = True)
-    gps_alt = models.CharField(max_length = MAX_LEN, null = True, blank = True)
-    voc = models.IntegerField(null = True, blank = True)            # voc 값
-    air_quality = models.IntegerField(null = True, blank = True)
+    temperature = models.FloatField(null = True, blank = True)    # 온도 값
+    humid = models.FloatField(null = True, blank = True)          # 습도 값
+    accelX = models.FloatField(null = True, blank = True)
+    accelY = models.FloatField(null = True, blank = True)
+    accelZ = models.FloatField(null = True, blank = True)
+    pressure = models.FloatField(null = True, blank = True)
+    distance = models.FloatField(null = True, blank = True)
+    gyroX = models.FloatField(null = True, blank = True)
+    gyroY = models.FloatField(null = True, blank = True)
+    gyroZ = models.FloatField(null = True, blank = True)
+    gps_lat = models.FloatField(max_length = MAX_LEN, null = True, blank = True)
+    gps_lng = models.FloatField(max_length = MAX_LEN, null = True, blank = True)
+    gps_alt = models.FloatField(max_length = MAX_LEN, null = True, blank = True)
+    voc = models.FloatField(null = True, blank = True)            # voc 값
+    air_quality = models.FloatField(null = True, blank = True)
     
 
 

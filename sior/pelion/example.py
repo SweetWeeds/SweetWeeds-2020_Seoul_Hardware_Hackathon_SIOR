@@ -62,7 +62,7 @@ def _subscription_handler(device_id, path, value):
 def _main():
     api = ConnectAPI()
     # calling start_notifications is required for getting/setting resource synchronously
-    api.start_notifications()
+    #api.start_notifications()
     devices = api.list_connected_devices().data
     if not devices:
         raise Exception("No connected devices registered. Aborting")
@@ -77,8 +77,26 @@ def _main():
     # Run forever
     while True:
         value = api.get_resource_value(devices[0].id, BUTTON_RESOURCE)
-        _current_val(value)
-        time.sleep(15)
+        svtemperature = api.get_resource_value(devices[0].id, "/3303/0/5700")
+        print(svtemperature)
+        svhumid = api.get_resource_value(devices[0].id, "/3304/0/5700")
+        print(svhumid)
+        svaccelX = api.get_resource_value(devices[0].id, "/3313/0/5702")
+        svaccelY = api.get_resource_value(devices[0].id, "/3313/0/5703")
+        svaccelZ = api.get_resource_value(devices[0].id, "/3313/0/5704")
+        svpressure = api.get_resource_value(devices[0].id, "/3323/0/5700")
+        svdistance = api.get_resource_value(devices[0].id, "/3330/0/5700")
+        svgyroX = api.get_resource_value(devices[0].id, "/3334/0/5702")
+        svgyroY = api.get_resource_value(devices[0].id, "/3334/0/5703")
+        svgyroZ = api.get_resource_value(devices[0].id, "/3334/0/5704")
+        print("gyroz:{}".format(svgyroZ))
+        svgps_lat = api.get_resource_value(devices[0].id, "/3336/0/5702")
+        print(svgps_lat)
+        svgps_lng = api.get_resource_value(devices[0].id, "/3336/0/5703")
+        svgps_alt = api.get_resource_value(devices[0].id, "/3336/0/5704")
+        svvoc = api.get_resource_value(devices[0].id, "/10313/0/5700")
+        svair_quality = api.get_resource_value(devices[0].id, "/10313/0/5701")
+        time.sleep(5)
         #pass
 
 
