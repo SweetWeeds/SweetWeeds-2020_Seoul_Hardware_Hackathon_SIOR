@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # --------------------------------------------------------------------------
-"""Example showing basic usage of the webhook functionality."""
+"""Example showing basic usage of the webhook functionality.
 from mbed_cloud import ConnectAPI
 import time
 
@@ -29,7 +29,7 @@ def _main():
     # Delete device subscriptions
     api.delete_device_subscriptions(devices[0].id)
     # First register to webhook
-    api.update_webhook("http://sior.koreasouth.cloudapp.azure.com:8000/webhook/")
+    api.update_webhook("https://webhook.site/6468f765-be2a-4053-8a53-cd0951cb9529")
     time.sleep(2)
     api.add_resource_subscription(devices[0].id, BUTTON_RESOURCE)
     while True:
@@ -43,4 +43,44 @@ def _main():
 
 
 if __name__ == '__main__':
+    _main()
+"""
+from mbed_cloud import ConnectAPI
+import time
+BUTTON_RESOURCE = "/3313/0/5702"
+
+
+def _current_val(value):
+    # Print the current value
+    print("Current value: %r" % (value))
+
+
+def _subscription_handler(device_id, path, value):
+    print("Device: %s, Resoure path: %s, Current value: %r" % (device_id, path, value))
+
+
+def _main():
+    api = ConnectAPI()
+    # calling start_notifications is required for getting/setting resource synchronously
+    api.start_notifications()
+    devices = api.list_connected_devices().data
+    if not devices:
+        raise Exception("No connected devices registered. Aborting")
+
+    # Synchronously get the initial/current value of the resource
+    value = api.get_resource_value(devices[0].id, BUTTON_RESOURCE)
+    _current_val(value)
+
+    # Register a subscription for new values
+    #api.add_resource_subscription_async(devices[0].id, BUTTON_RESOURCE, _subscription_handler)
+
+    # Run forever
+    while True:
+        value = api.get_resource_value(devices[0].id, BUTTON_RESOURCE)
+        _current_val(value)
+        time.sleep(15)
+        #pass
+
+
+if __name__ == "__main__":
     _main()

@@ -16,11 +16,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from . import views
-
 urlpatterns = [
     path('', views.home),
     path('location', views.location),
     path('statistics', views.statistics),
-    #path('oauth/', views.oauth, name='oauth'), #added for kakao
-
+    path('oauth/', views.oauth, name='oauth'), #added for kakao
+    path('kakao_alert', views.kakao_alert, name='kakao_alert'),
 ]

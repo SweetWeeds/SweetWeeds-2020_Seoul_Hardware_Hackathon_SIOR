@@ -12,7 +12,7 @@
       <img src="https://cdn.pixabay.com/photo/2013/07/12/16/27/safety-helmet-150913_960_720.png" alt="Sorssy" width="40" height="40">
       </div>
     <h1 class="h3 mb-0 text-gray-800">안전Hat 관리페이지</h1>
-    <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+    <a href="{% url 'kakao_alert' %}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
         class="fas fa-download fa-sm text-white-50"></i> 보고서 생성</a>
   </div>
 
@@ -63,7 +63,7 @@
     </div>
   </div>
 </div>
-    <!-- Earnings (Monthly) Card Example -->
+    <!-- Earnings (Monthly) Card Example
     <div class="col-xl-3 col-md-6 mb-4">
       <div class="card border-left-success shadow h-100 py-2">
         <div class="card-body">
@@ -79,6 +79,7 @@
         </div>
       </div>
     </div>
+  -->
     
     <!-- 작업 진행률 -->
     <div class="col-xl-3 col-md-6 mb-4">
@@ -113,8 +114,8 @@
         <div class="card-body">
           <div class="row no-gutters align-items-center">
             <div class="col mr-2">
-              <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">작업장 평균 온도</div>
-              <div class="h5 mb-0 font-weight-bold text-gray-800">18 °C</div>
+              <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">작업장 평균 소음</div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800">50 dB</div>
             </div>
             <div class="col-auto">
               <i class="fas fa-comments fa-2x text-gray-300"></i>
@@ -259,7 +260,7 @@
         </div>
         <!-- Card Body -->
         <div class="card-body">
-          <div id="map" style="width:100%;height:295px;"></div>
+          <div id="map" style="width:100%;height:193px;"></div>
           <script type="text/javascript"
             src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=ufen3b2lar"></script>
           <script>
