@@ -24,6 +24,7 @@ urlpatterns = [
     path('', dashboard.views.isauth, name='isauth'),
     path('home/',include('dashboard.urls')),
     path('accounts/',include('accounts.urls')),
+    path('get_token/<token_key>', accounts.views.get_token, name='get_token'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

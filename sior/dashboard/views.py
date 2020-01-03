@@ -4,8 +4,8 @@ from .models import Hat, SensorValue
 from django.db.models import Max
 import requests
 import json
-
-
+from accounts.models import Token
+from mbed_cloud import ConnectAPI
 
 # Create your views here.
 def isauth(request):
@@ -18,7 +18,7 @@ def isauth(request):
 
 def home(request):
     #kakao 때문에 추가함.
-    
+    Hats = Hat.objects
     #여기부터 날씨 때문에 추가함.
     url = 'http://api.openweathermap.org/data/2.5/weather?q={}&units=imperial&appid=08a543cc6623032ae7fe6365a5c9b994'
     city = 'Republic of Korea'
@@ -39,7 +39,7 @@ def home(request):
     if not request.user.is_authenticated:
         return redirect('../accounts/login')
     else:
-        return render(request, 'home.html', {'SensorValues' : SensorValues, 'weather' : weather, 'max_temperature' : max_temperature, 'max_voc' : max_voc, 'max_humid' : max_humid})
+        return render(request, 'home.html', {'Hats' : Hats, 'SensorValues' : SensorValues, 'weather' : weather, 'max_temperature' : max_temperature, 'max_voc' : max_voc, 'max_humid' : max_humid})
 
 def oauth(request): #for kakao api
     code = request.GET['code']
@@ -131,7 +131,46 @@ def oauth(request): #for kakao api
     print(response.json())
     return redirect('/home')
 
-def kakao_alert(request):
+def alert(request):
+    """ Pelion 전송 """
+    api = ConnectAPI()
+    devices = api.list_connected_devices().data
+    WRITEABLE_RESOURCE = ""
+    for device in devices:
+        api.set_resource_value(device_id=device.id,
+                               resource_path=WRITEABLE_RESOURCE,
+                               resource_value='1')
+    """ Pelion 전송 """
+
+    """ 안드로이드 앱 푸시알람 전송 """
+    # fcm 푸시 메세지 요청 주소
+    url = 'https://fcm.googleapis.com/fcm/send'
+    ids = Token.objects.values_list('registration_token')
+    ids_result = []
+    for id in ids:
+        ids_result.append(id[0])
+    title = '위험상황 발생!'
+    body = '현장 인원들은 빠르게 대피해주십시오!!'
+    # 인증 정보(서버 키)를 헤더에 담아 전달
+    headers = {
+        'Authorization': 'key=AAAAc-2tnwg:APA91bGdyyt5YGO1gWQBYwRo0wuj1ettZn0LLGZHw6zEKg_2OWIMQdYqktsaD9t1qDR-37tHx_D1LyabvhPY32rLo1IOx9VN7ILnsOGCIhr9URdY3mr5Je72aR_dJCu-LmNu0LboBsAV',
+        'Content-Type': 'application/json; UTF-8',
+    }
+
+    # 보낼 내용과 대상을 지정
+    content = {
+        'registration_ids': ids_result,
+        'notification': {
+            'title': title,
+            'body': body
+        }
+    }
+    # json 파싱 후 requests 모듈로 FCM 서버에 요청
+    requests.post(url, data=json.dumps(content), headers=headers)
+    """ 안드로이드 앱 푸시알람 전송 """
+
+    """ 카카오 알람 전송 """
+    # 카카오 알람 전송 - made by 혁수 #
     login_request_uri = 'https://kauth.kakao.com/oauth/authorize?'
 
     client_id = '2a681354f8c8188ede46e69db97dcaaa'
@@ -141,6 +180,7 @@ def kakao_alert(request):
     login_request_uri += '&redirect_uri=' + redirect_uri
     login_request_uri += '&response_type=code&scope=talk_message'
     #login_request_uri += '&response_type=code'
+    """ 카카오 알람 전송 """
 
     return redirect(login_request_uri)
 
@@ -160,8 +200,6 @@ def location(request):
     }
     return render(request, 'location.html', {'weather' : weather, 'Hats': Hats, 'SensorValues':SensorValues})
 
-def alert(request):
-    return render(request, 'alert.html')
 
 def statistics(request):
     SensorValues = SensorValue.objects.order_by('-recordtime')[:10]
@@ -171,6 +209,7 @@ def statistics(request):
     url = 'http://api.openweathermap.org/data/2.5/weather?q={}&units=imperial&appid=08a543cc6623032ae7fe6365a5c9b994'
     city = 'Republic of Korea'
     city_weather = requests.get(url.format(city)).json() #request the API data and convert the JSON to Python data types
+   
 
     weather = {
         'city' : city,
@@ -185,8 +224,8 @@ def device_list(request):
     return render(request, 'device_list.html', {'Hats':Hats})
 
 def device_info(request, hat_id):
-    hat = Hat.objects.filter(id = hat_id)
-    return render(request, 'device_info.html', {'hat_id':hat})
+    hat = Hat.objects.all().filter(id = hat_id)
+    return render(request, 'device_info.html', {'hat':hat})
 
 ''' 혁수가 보기 편할려고 추가함.
     class Hat(models.Model):
@@ -208,3 +247,6 @@ def device_info(request, hat_id):
     humid = models.IntegerField(null = True, blank = True)          # 습도 값
     gyro = models.CharField(max_length = MAX_LEN, null = True, blank = True)    # 자이로 센서 값
 '''
+
+def criteria(request):
+    return render(request, 'criteria.html', {})

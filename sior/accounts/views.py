@@ -3,6 +3,11 @@ from django.shortcuts import redirect
 from django.http import HttpResponse
 from django.contrib.auth.models import User
 from django.contrib import auth
+from .models import Token
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
 
 def default(request):
@@ -29,10 +34,17 @@ def register(request):
             user = User.objects.create_user(
                 username=request.POST["username"], password=request.POST["InputPassword"])
             auth.login(request, user)
-            return redirect('../home')
+            return redirect('/home')
     else:
         return render(request, 'register.html', {})
 
 def logout(request):
     auth.logout(request)
+    return redirect('/home')
+
+@api_view(['POST'])
+@csrf_exempt
+def get_token(request, token_key):
+    t = Token.objects.create(registration_token = token_key)
+    t.save()
     return redirect('/home')

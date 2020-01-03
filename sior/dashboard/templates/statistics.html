@@ -9,9 +9,9 @@
     <!-- 온도 -->
     <div> 
       {% with co2=max_temperature.temperature__max %}
-    <div id="test" data-val="1"></div>
+      <div id="test" data-val="1"></div>
       <h4 class="small font-weight-bold">온도 <span class="float-right">{{co2}}%</span></h4>
-      <div class="progress mb-4">
+        <div class="progress mb-4">
       {% if co2 < 20 %}
         <div class="progress-bar bg-normal" role="progressbar" style="width: {{co2}}%" aria-valuenow="20"
           aria-valuemin="0" aria-valuemax="100"></div>
@@ -86,10 +86,75 @@
   </div>
   </div>
 
+  <!-- Begin Page Content -->
+  <div class="container-fluid">
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">측정값 변화도</h1>
+    <p class="mb-4">최근 1분 30초의 통계를 나타냅니다</p>
+    <!-- Content Row -->
+    <div class="row">
+      <div class="col-xl-6 col-lg-3">
+        <!-- 온도Chart -->
+        <div class="card shadow mb-4">
+          <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">온도</h6>
+          </div>
+          <div class="card-body">
+            <div class="chart-area">
+              <canvas id="myChart"  class="charths-render-monitor"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-6 col-lg-3">
+        <!-- VOC Chart -->
+        <div class="card shadow mb-4">
+          <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">휘발성유기화합물</h6>
+          </div>
+          <div class="card-body">
+            <div class="chart-area">
+              <canvas id="myChart2"  class="charths-render-monitor"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-6 col-lg-3">
+        <!-- 온도Chart -->
+        <div class="card shadow mb-4">
+          <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">습도</h6>
+          </div>
+          <div class="card-body">
+            <div class="chart-area">
+              <canvas id="myChart3"  class="charths-render-monitor"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-6 col-lg-3">
+        <!-- 온도Chart -->
+        <div class="card shadow mb-4">
+          <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">공기 오염도</h6>
+          </div>
+          <div class="card-body">
+            <div class="chart-area">
+              <canvas id="myChart4"  class="charths-render-monitor"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><!--class=row-->
+  </div>
+ 
+
+
+
+
   <!-- 데이터 표로 나타내기 -->
   <!-- Begin Page Content -->
   <div class="container-fluid">
-
     <!-- Page Heading -->
     <h1 class="h3 mb-2 text-gray-800">작업자별 안전 수치</h1>
     <p class="mb-4">작업자별 안전 수치</p>
@@ -128,10 +193,10 @@
             <tbody>
               
               {% for SensorValue in SensorValues.all %}
-              
+              <!--|date:'m월d일 H:i'-->
               <tr>
                 <td>{{SensorValue.owner}}</td>
-                <td>{{SensorValue.recordtime}}</td>
+                <td>{{SensorValue.recordtime|date:'m월d일 H:i.s'}}</td>
                 <td>{{SensorValue.gps}}</td>
                 <td>{{SensorValue.temperature}}</td>
                 <td>{{SensorValue.voc}}</td>
@@ -150,5 +215,185 @@
 
 </div>
 <!-- End of Main Content -->
+
+<!--chart data-->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0">
+  var ctx = document.getElementById('myChart');
+</script>
+<script>
+  var ctx = document.getElementById('myChart').getContext('2d');
+  var chart = new Chart(ctx, {
+      // The type of chart we want to create
+      type: 'line',
+      // The data for our dataset
+      data: {
+          labels: ['90초 전', '80초 전', '70초 전', '60초 전', '50초 전', '40초 전', '30초 전', '20초 전', '10초 전', '현재'],
+          datasets: [{
+              label: 'My First dataset',
+              backgroundColor: 'transparent',
+              borderColor: 'rgb(255, 191, 0)',
+              data: [{% for SensorValue in SensorValues.all reversed %}{{ SensorValue.temperature }},{% endfor %}]
+          }]
+      },
+      // Configuration options go here
+      options: {
+        maintainAspectRatio: false,
+        layout: {
+          padding: {
+            left: 10,
+            right: 25,
+            top: 25,
+            bottom: 0
+          }
+        },
+        responsive: true,
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: false
+            }
+          }]
+        },
+        legend: {
+            display: false
+        },
+      }
+  });
+  </script>
+
+  <!--두번째 차트-->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0">
+    var ctx = document.getElementById('myChart2');
+  </script>
+  <script>
+    var ctx = document.getElementById('myChart2').getContext('2d');
+    var chart = new Chart(ctx, {
+        // The type of chart we want to create
+        type: 'line',
+        // The data for our dataset
+        data: {
+            labels: ['90초 전', '80초 전', '70초 전', '60초 전', '50초 전', '40초 전', '30초 전', '20초 전', '10초 전', '현재'],
+            datasets: [{
+                label: 'My First dataset',
+                backgroundColor: 'transparent',
+                borderColor: 'rgb(0, 0, 0)',
+                data: [{% for SensorValue in SensorValues.all reversed %}{{ SensorValue.voc }},{% endfor %}]
+            }]
+        },
+        // Configuration options go here
+        options: {
+          maintainAspectRatio: false,
+          layout: {
+            padding: {
+              left: 10,
+              right: 25,
+              top: 25,
+              bottom: 0
+            }
+          },
+          responsive: true,
+          scales: {
+            yAxes: [{
+              ticks: {
+                beginAtZero: false
+              }
+            }]
+          },
+          legend: {
+              display: false
+          },
+        }
+    });
+    </script>
+
+    <!--세번째 차트-->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0">
+    var ctx = document.getElementById('myChart3');
+  </script>
+  <script>
+    var ctx = document.getElementById('myChart3').getContext('2d');
+    var chart = new Chart(ctx, {
+        // The type of chart we want to create
+        type: 'line',
+        // The data for our dataset
+        data: {
+            labels: ['90초 전', '80초 전', '70초 전', '60초 전', '50초 전', '40초 전', '30초 전', '20초 전', '10초 전', '현재'],
+            datasets: [{
+                label: 'My First dataset',
+                backgroundColor: 'transparent',
+                borderColor: 'rgb(0, 0, 0)',
+                data: [{% for SensorValue in SensorValues.all reversed %}{{ SensorValue.humid }},{% endfor %}]
+            }]
+        },
+        // Configuration options go here
+        options: {
+          maintainAspectRatio: false,
+          layout: {
+            padding: {
+              left: 10,
+              right: 25,
+              top: 25,
+              bottom: 0
+            }
+          },
+          responsive: true,
+          scales: {
+            yAxes: [{
+              ticks: {
+                beginAtZero: false
+              }
+            }]
+          },
+          legend: {
+              display: false
+          },
+        }
+    });
+    </script>
+
+    <!--네번째 차트-->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0">
+    var ctx = document.getElementById('myChart4');
+  </script>
+  <script>
+    var ctx = document.getElementById('myChart4').getContext('2d');
+    var chart = new Chart(ctx, {
+        // The type of chart we want to create
+        type: 'line',
+        // The data for our dataset
+        data: {
+            labels: ['90초 전', '80초 전', '70초 전', '60초 전', '50초 전', '40초 전', '30초 전', '20초 전', '10초 전', '현재'],
+            datasets: [{
+                label: 'My First dataset',
+                backgroundColor: 'transparent',
+                borderColor: 'rgb(255, 191, 0)',
+                data: [{% for SensorValue in SensorValues.all reversed %}{{ SensorValue.air_quality }},{% endfor %}]
+            }]
+        },
+        // Configuration options go here
+        options: {
+          maintainAspectRatio: false,
+          layout: {
+            padding: {
+              left: 10,
+              right: 25,
+              top: 25,
+              bottom: 0
+            }
+          },
+          responsive: true,
+          scales: {
+            yAxes: [{
+              ticks: {
+                beginAtZero: false
+              }
+            }]
+          },
+          legend: {
+              display: false
+          },
+        }
+    });
+    </script>
 
 {% endblock %}

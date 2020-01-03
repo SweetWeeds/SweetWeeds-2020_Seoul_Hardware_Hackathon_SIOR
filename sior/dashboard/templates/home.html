@@ -1,29 +1,15 @@
 {% extends "base.html" %}
 {% load static %}
+{% load extra_filter %}
 {% block title %}안전 Hat{% endblock %}
+<meta name="viewport" content="width=device-width, initial-scale=1">
 {% block content %}
 
 <!-- Begin Page Content -->
 <div class="container-fluid">
 
   <!-- Page Heading -->
-  <div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <div target="_blank" href="/sior/dashboard/templates/img/hat.png" >
-      <img src="https://cdn.pixabay.com/photo/2013/07/12/16/27/safety-helmet-150913_960_720.png" alt="Sorssy" width="40" height="40">
-      </div>
-    <h1 class="h3 mb-0 text-gray-800">안전Hat 관리페이지</h1>
-      
-    <!-- Nav Item - User Information -->
-      <nav class="navbar">
-        <div class="dropdown-item" href="#" data-toggle="modal" data-target="#emergencyModal">
-          <span class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm">비상신호 전송</span>
-        </div>
-      
-      </nav>
-
-
-  </div>
-
+  
   <!-- Content Row -->
   <div class="row">
     <!-- 현재 동작중인 헬멧 수 -->
@@ -271,17 +257,27 @@
           <script type="text/javascript"
             src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=ufen3b2lar"></script>
           <script>
-            var position = new naver.maps.LatLng(37.3595704, 127.105399);
+            var position = new naver.maps.LatLng({{0|get_last_pos|safe}});
             var mapOptions = {
               center: position,
               zoom: 10
             };
             var map = new naver.maps.Map('map', mapOptions);
+            <!-- 지도 마커 -->
+            {% for Hat in Hats.all %}
             var markerOptions = {
-              position: position,
+              position: new naver.maps.LatLng({{Hat|get_last_pos|safe}}),
               map: map,
+              icon: {
+                url: 'http://sior.koreasouth.cloudapp.azure.com:8000/media/hat.png',
+                size: new naver.maps.Size(34, 34),
+                scaledSize: new naver.maps.Size(34, 34),
+                origin: new naver.maps.Point(0, 0),
+                anchor: new naver.maps.Point(12, 34)
+              }
             };
             var marker = new naver.maps.Marker(markerOptions);
+            {% endfor %}
           </script>
         </div>
       </div>

@@ -5,9 +5,12 @@
   <!-- Custom styles for this page -->
   <link href="{% static 'vendor/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet">
 {% block content %}
+<div class="col-xl">
     <div class="card shadow mb-4">
       <!-- 지도 표시부 -->
-      <div id="map" style="width: 100%;height: 500px;"></div>
+      <div class="card shadow mb-4">
+        <div id="map" style="width: 100%;height: 500px;"></div>
+        </div>
     <!-- DataTales Example -->
       <div class="card-body">
         <div class="table-responsive">
@@ -39,13 +42,14 @@
                 </td>
                 <td>{{Hat.job_position}}</td>
                 <td>{{Hat.phone_number}}</td>
-                <td>{{Hat.last_connect_date|date:"r"}}</td>
+                <td>{{Hat|get_last_date|date:"r"}}</td>
               </tr>
             {% endfor %}
             </tbody>
           </table>
         </div>
       </div>
+    </div>
     </div>
     
 
@@ -87,11 +91,7 @@
     {% endfor %}
   </script>
 
-  <!-- 이동 스크립트 -->
-  <script>
-    
-  </script>
-  <!-- Geocode 서브 모듈 -->
+  <!-- Geocode 서브 모듈, 이동 스크립트 -->
   <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?clientId=ufen3b2lar&submodules=geocoder"></script>
   <script>
     {% for Hat in Hats.all %}
@@ -107,7 +107,8 @@
       // do Something
       document.getElementById("{{Hat.id}}_loc").innerHTML = items[0].address
     });
-
+    
+    // 이동 스크립트
     $("#to-loc_{{Hat.id}}").on("click", function(e) {
       e.preventDefault();
       var loc_{{Hat.id}} = new naver.maps.LatLng({{Hat|get_last_pos|safe}})

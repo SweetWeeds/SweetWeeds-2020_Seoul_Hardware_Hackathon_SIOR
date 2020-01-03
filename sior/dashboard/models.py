@@ -12,6 +12,8 @@ class Hat(models.Model):
     employee_id = models.CharField(max_length = 100, null = True)
     phone_number = models.CharField(max_length = 20, null = True)
     job_position = models.CharField(max_length = MAX_LEN, null = True)
+    risk_level = models.CharField(max_length = 10, \
+        choices=(('정상', 1), ('주의',2), ('위험', 3)), default=1)
     #last_location_gps_lat = objects.filter(testfield=12).latest()
     #last_location_gps_lng = models.CharField(max_length = MAX_LEN, null = True, blank = True)
     #last_location_gps_alt = models.CharField(max_length = MAX_LEN, null = True, blank = True)
@@ -37,9 +39,19 @@ class SensorValue(models.Model):
     voc = models.FloatField(null = True, blank = True)            # voc 값
     air_quality = models.FloatField(null = True, blank = True)
     
-
-class Photo(models.Model):
-    image = models.ImageField(upload_to='sior/static')
-    filtered_image = models.ImageField(upload_to='%Y/%m/%d/filtered')
-    content = models.TextField(max_length=500, null=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+class SensorCriteria(models.Model):
+    temperature_normal = models.FloatField(null = True, blank = True)
+    temperature_warning = models.FloatField(null = True, blank = True)
+    temperature_dangerous = models.FloatField(null = True, blank = True)
+    humid_normal = models.FloatField(null = True, blank = True)
+    humid_warning = models.FloatField(null = True, blank = True)
+    humid_dangerous = models.FloatField(null = True, blank = True)
+    pressure_normal = models.FloatField(null = True, blank = True)
+    pressure_warning = models.FloatField(null = True, blank = True)
+    pressure_dangerous = models.FloatField(null = True, blank = True)
+    voc_normal = models.FloatField(null = True, blank = True)            # voc 값
+    voc_warning = models.FloatField(null = True, blank = True)            # voc 값
+    voc_dangerous = models.FloatField(null = True, blank = True)            # voc 값
+    air_quality_normal = models.FloatField(null = True, blank = True)
+    air_quality_warning = models.FloatField(null = True, blank = True)
+    air_quality_dangerous = models.FloatField(null = True, blank = True)

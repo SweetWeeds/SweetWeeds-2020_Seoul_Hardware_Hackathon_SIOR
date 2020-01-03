@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'accounts',
     'django_celery_beat',
     'django_celery_results',
+    'fcm_django',
 ]
 
 MIDDLEWARE = [
@@ -55,6 +56,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+
 
 BROKER_URL = 'redis://localhost:6379/0'
 CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
@@ -141,3 +144,7 @@ STATICFILES_DIRS = (
 # Media URL
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'sior/static/img')
+
+FCM_DJANGO_SETTINGS = {
+        'FCM_SERVER_KEY': 'AIzaSyCW3hZVBvsKmAzhrxSB6tfARPAwj586Mk0'
+}
