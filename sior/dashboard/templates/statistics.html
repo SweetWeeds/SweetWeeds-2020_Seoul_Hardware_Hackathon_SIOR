@@ -169,7 +169,7 @@
           <table class="table table-bordered" id="dataTable" width="100%" cellspacing="1">
             <thead>
               <tr>
-                <th>안전 HAT</th>
+                <th>착용자</th>
                 <th>측정 시간</th>
                 <th>GPS</th>
                 <th>온도</th>
@@ -195,9 +195,9 @@
               {% for SensorValue in SensorValues.all %}
               <!--|date:'m월d일 H:i'-->
               <tr>
-                <td>{{SensorValue.owner}}</td>
+                <td>{{SensorValue.owner.user_name}}</td>
                 <td>{{SensorValue.recordtime|date:'m월d일 H:i.s'}}</td>
-                <td>{{SensorValue.gps}}</td>
+                <td>{{SensorValue.gps_lat}}, {{SensorValue.gps_lng}}, {{SensorValue.gps_alt}}</td>
                 <td>{{SensorValue.temperature}}</td>
                 <td>{{SensorValue.voc}}</td>
                 <td>{{SensorValue.humid}}</td>

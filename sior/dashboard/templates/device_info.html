@@ -9,6 +9,9 @@
 <div class="container">
     <div class="card o-hidden border-0 shadow-lg my-5">
       <div class="card-body p-0">
+        <div class="card-header py-3">
+          <h6 class="m-0 font-weight-bold text-primary">장비 정보</h6>
+        </div>
         <!-- Nested Row within Card Body -->
         <div class="row">
             <!-- 지도 -->
@@ -17,10 +20,6 @@
             <div class="card">
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-md-12">
-                            <h4>장비 정보</h4>
-                            <hr>
-                        </div>
                     </div>
                     <div class="row">
                         <div class="col-md-12">
@@ -32,58 +31,38 @@
                                 </div>
                               </div>
                               <div class="form-group row">
-                                <label for="name" class="col-4 col-form-label">First Name</label> 
+                                <label for="device_id" class="col-4 col-form-label">디바이스 ID</label> 
                                 <div class="col-8">
-                                  <input id="name" name="name" placeholder="First Name" class="form-control here" type="text">
+                                  <input id="name" name="name" placeholder="디바이스 ID" class="form-control here" type="text" value="{{hat.device_id}}" disabled>
                                 </div>
                               </div>
                               <div class="form-group row">
-                                <label for="lastname" class="col-4 col-form-label">Last Name</label> 
+                                <label for="employee_id" class="col-4 col-form-label">직원 ID</label> 
                                 <div class="col-8">
-                                  <input id="lastname" name="lastname" placeholder="Last Name" class="form-control here" type="text">
+                                  <input id="lastname" name="lastname" placeholder="직원 ID" class="form-control here" type="text" value="{{hat.employee_id}}">
                                 </div>
                               </div>
                               <div class="form-group row">
-                                <label for="text" class="col-4 col-form-label">Nick Name*</label> 
+                                <label for="job_pos" class="col-4 col-form-label">직책</label> 
                                 <div class="col-8">
-                                  <input id="text" name="text" placeholder="Nick Name" class="form-control here" required="required" type="text">
+                                  <input id="job_pos" name="job_pos" placeholder="직책" class="form-control here" required="required" type="text" value="{{hat.job_position}}">
                                 </div>
                               </div>
                               <div class="form-group row">
-                                <label for="select" class="col-4 col-form-label">Display Name public as</label> 
+                                <label for="phone_num" class="col-4 col-form-label">휴대전화</label> 
                                 <div class="col-8">
-                                  <select id="select" name="select" class="custom-select">
-                                    <option value="admin">Admin</option>
-                                  </select>
+                                  <input id="phone_num" name="phone_num" placeholder="휴대전화" class="form-control here" required="required" type="text" value="{{hat.phone_number}}">
                                 </div>
                               </div>
                               <div class="form-group row">
-                                <label for="email" class="col-4 col-form-label">Email*</label> 
-                                <div class="col-8">
-                                  <input id="email" name="email" placeholder="Email" class="form-control here" required="required" type="text">
-                                </div>
-                              </div>
-                              <div class="form-group row">
-                                <label for="website" class="col-4 col-form-label">Website</label> 
-                                <div class="col-8">
-                                  <input id="website" name="website" placeholder="website" class="form-control here" type="text">
-                                </div>
-                              </div>
-                              <div class="form-group row">
-                                <label for="publicinfo" class="col-4 col-form-label">Public Info</label> 
+                                <label for="publicinfo" class="col-4 col-form-label">공개정보</label> 
                                 <div class="col-8">
                                   <textarea id="publicinfo" name="publicinfo" cols="40" rows="4" class="form-control"></textarea>
-                                </div>
-                              </div>
-                              <div class="form-group row">
-                                <label for="newpass" class="col-4 col-form-label">New Password</label> 
-                                <div class="col-8">
-                                  <input id="newpass" name="newpass" placeholder="New Password" class="form-control here" type="text">
                                 </div>
                               </div> 
                               <div class="form-group row">
                                 <div class="offset-4 col-8">
-                                  <button name="submit" type="submit" class="btn btn-primary">Update My Profile</button>
+                                  <button name="submit" type="submit" class="btn btn-primary">수정</button>
                                 </div>
                               </div>
                             </form>
@@ -95,7 +74,59 @@
         </div>
       </div>
     </div>
+<!-- 데이터 표로 나타내기 -->
+  <!-- Begin Page Content -->
+  <div class="container-fluid">
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+      <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">센서 기록</h6>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered" id="dataTable" width="100%" cellspacing="1">
+            <thead>
+              <tr>
+                <th>측정 시간</th>
+                <th>GPS</th>
+                <th>온도</th>
+                <th>휘발성유기화합물</th>
+                <th>습도</th>
+                <th>기울기(Gyro)</th>
+              </tr>
+            </thead>
+            <!-- tfoot
+            <tfoot>
+              <tr>
+                <th>Name</th>
+                <th>Position</th>
+                <th>Office</th>
+                <th>Age</th>
+                <th>Start date</th>
+                <th>Salary</th>
+              </tr>
+            </tfoot>
+            -->
+            <tbody>
+              
+              {% for SensorValue in SensorValues.all %}
+              <!--|date:'m월d일 H:i'-->
+              <tr>
+                <td>{{SensorValue.recordtime|date:'m월d일 H:i.s'}}</td>
+                <td>{{SensorValue.gps_lat}}, {{SensorValue.gps_lng}}, {{SensorValue.gps_alt}}</td>
+                <td>{{SensorValue.temperature}}</td>
+                <td>{{SensorValue.voc}}</td>
+                <td>{{SensorValue.humid}}</td>
+                <td>{{SensorValue.gyro}}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
 
+  </div>
   </div>
     
 {% endblock %}
@@ -110,11 +141,32 @@
   <!-- 네이버 지도 스크립트 -->
   <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=ufen3b2lar"></script>
   <script>
-    var position = new naver.maps.LatLng({{0|get_last_pos|safe}});
+    var position = new naver.maps.LatLng({{hat|get_last_pos|safe}});
     var mapOptions = {
       center: position,
       zoom: 10
     };
     var map = new naver.maps.Map('map', mapOptions);
+    var markerOptions = {
+      position: new naver.maps.LatLng({{hat|get_last_pos|safe}}),
+      map: map,
+      icon: {
+        url: 'http://sior.koreasouth.cloudapp.azure.com:8000/media/hat.png',
+        size: new naver.maps.Size(34, 34),
+        scaledSize: new naver.maps.Size(34, 34),
+        origin: new naver.maps.Point(0, 0),
+        anchor: new naver.maps.Point(12, 34)
+      }
+    };
+    var marker = new naver.maps.Marker(markerOptions);
+    var polyline = new naver.maps.Polyline({
+      map: map,
+      path: [
+        {% for pos in hat|get_last_one_hour_pos %}
+        new naver.maps.LatLng({{pos}}),
+        {% endfor %}
+        new naver.maps.LatLng(37.37544345085402, 127.11224555969238),
+      ]
+    });
   </script>
 {% endblock %}

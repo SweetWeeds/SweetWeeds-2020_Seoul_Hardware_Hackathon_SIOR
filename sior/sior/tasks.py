@@ -39,6 +39,7 @@ class PelionSync(Task):
             self.devices = self.api.list_connected_devices().data
             if not self.devices:
                 print("[PELION] There is no registered device in Pelion!!")
+                print(self.devices)
             print("[PELION] Device detected!!")
         except:
             print("[PELION] Initializing Faield!!")

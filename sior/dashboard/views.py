@@ -224,8 +224,9 @@ def device_list(request):
     return render(request, 'device_list.html', {'Hats':Hats})
 
 def device_info(request, hat_id):
-    hat = Hat.objects.all().filter(id = hat_id)
-    return render(request, 'device_info.html', {'hat':hat})
+    hat = Hat.objects.all().get(id = hat_id)
+    SensorValues = SensorValue.objects.all().filter(owner=hat)
+    return render(request, 'device_info.html', {'hat':hat, 'SensorValues':SensorValues})
 
 ''' 혁수가 보기 편할려고 추가함.
     class Hat(models.Model):
