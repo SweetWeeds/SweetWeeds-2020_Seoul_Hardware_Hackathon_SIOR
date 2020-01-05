@@ -6,8 +6,7 @@ import os
 import sys
 from mbed_cloud import ConnectAPI
 from django.contrib.auth.models import User
-from dashboard.models import Hat, SensorValue
-
+from dashboard.models import Hat, SensorValue, isWarning
 
 RESOURCE_PATH_NAME = \
     {"/3303/0/5700":"temperature", \
@@ -20,16 +19,19 @@ RESOURCE_PATH_NAME = \
         "/3334/0/5702":"gyroX", \
         "/3334/0/5703":"gyroY", \
         "/3334/0/5704":"gyroZ", \
-        "/3336/0/5702":"gps_lat", \
-        "/3336/0/5703":"gps_lng", \
+        "/3336/0/5514":"gps_lat", \
+        "/3336/0/5515":"gps_lng", \
         "/3336/0/5704":"gps_alt", \
-        "/10313/0/5700":"voc", \
-        "/10313/0/5701":"air_quality"
+        "/3336/0/5516":"voc", \
+        "/3313/0/5702":"co2", \
+        "/10313/0/5701":"air_quality", \
+        "/1200/0/5501" : "isWarning"
     }
 class PelionSync(Task):
     devices = None
     api = None
     value = dict()
+    pre_isWarning = 0
     def __init__(self):
         self.rate_limit = 5
         self.time_limit = 10
@@ -63,22 +65,27 @@ def sync():
             sv = SensorValue(owner = hat, \
             temperature = sync.api.get_resource_value(device.id, "/3303/0/5700"), \
             humid = sync.api.get_resource_value(device.id, "/3304/0/5700"), \
-            accelX = sync.api.get_resource_value(device.id, "/3313/0/5702"), \
-            accelY = sync.api.get_resource_value(device.id, "/3313/0/5703"), \
-            accelZ = sync.api.get_resource_value(device.id, "/3313/0/5704"), \
-            pressure = sync.api.get_resource_value(device.id, "/3323/0/5700"), \
-            distance = sync.api.get_resource_value(device.id, "/3330/0/5700"), \
-            gyroX = sync.api.get_resource_value(device.id, "/3334/0/5702"), \
-            gyroY = sync.api.get_resource_value(device.id, "/3334/0/5703"), \
-            gyroZ = sync.api.get_resource_value(device.id, "/3334/0/5704"), \
-            gps_lat = 37.29503524, \
-            gps_lng = 126.9748767, \
+            # accelX = sync.api.get_resource_value(device.id, "/3313/0/5702"), \
+            # accelY = sync.api.get_resource_value(device.id, "/3313/0/5703"), \
+            # accelZ = sync.api.get_resource_value(device.id, "/3313/0/5704"), \
+            # pressure = sync.api.get_resource_value(device.id, "/3323/0/5700"), \
+            #distance = sync.api.get_resource_value(device.id, "/3330/0/5700"), \
+            # gyroX = sync.api.get_resource_value(device.id, "/3334/0/5702"), \
+            # gyroY = sync.api.get_resource_value(device.id, "/3334/0/5703"), \
+            # gyroZ = sync.api.get_resource_value(device.id, "/3334/0/5704"), \
+            gps_lat = sync.api.get_resource_value(device.id, "/3336/0/5514"), \
+            gps_lng = sync.api.get_resource_value(device.id, "/3336/0/5515"), \
             #gps_alt = sync.api.get_resource_value(device.id, "/3336/0/5704"), \
-            #voc = sync.api.get_resource_value(device.id, "/10313/0/5700"), \
-            #air_quality = sync.api.get_resource_value(device.id, "/10313/0/5701"), \
+            voc = sync.api.get_resource_value(device.id, "/3336/0/5516"), \
+            co2 = sync.api.get_resource_value(device.id, "/3313/0/5702"), \
+            air_quality = sync.api.get_resource_value(device.id, "/10313/0/5700"), \
             )
             sv.save()
+            iw = isWarning.objects.last()
+            iw.isWarning = sync.api.get_resource_value(device.id, "/1200/0/5501")
+            iw.save()
         except Exception as e:
             _, _ , tb = sys.exc_info() # tb -> traceback object
             print("[PELION:lineno.{}] ERROR!! Cannot get value!!".format(tb.tb_lineno))
+            sync.__init__(sync)
             return e

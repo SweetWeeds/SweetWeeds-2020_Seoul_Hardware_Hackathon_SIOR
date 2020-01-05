@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.shortcuts import redirect
-from .models import Hat, SensorValue
+from .models import Hat, SensorValue, isWarning
 from django.db.models import Max
 import requests
 import json
@@ -33,13 +33,15 @@ def home(request):
     #여기까지 내가 추가함.
 
     SensorValues = SensorValue.objects
-    max_temperature = SensorValue.objects.all().aggregate(Max('temperature'))
-    max_voc = SensorValue.objects.all().aggregate(Max('voc'))
-    max_humid = SensorValue.objects.all().aggregate(Max('humid'))
+    max_temperature = SensorValue.objects.order_by('-recordtime')[:10].aggregate(Max('temperature'))
+    max_voc = SensorValue.objects.order_by('-recordtime')[:10].aggregate(Max('voc'))
+    max_humid = SensorValue.objects.order_by('-recordtime')[:10].aggregate(Max('humid'))
+    max_co2 = SensorValue.objects.order_by('-recordtime')[:10].aggregate(Max('co2'))
+    max_air_quality = SensorValue.objects.order_by('-recordtime')[:10].aggregate(Max('air_quality'))
     if not request.user.is_authenticated:
         return redirect('../accounts/login')
     else:
-        return render(request, 'home.html', {'Hats' : Hats, 'SensorValues' : SensorValues, 'weather' : weather, 'max_temperature' : max_temperature, 'max_voc' : max_voc, 'max_humid' : max_humid})
+        return render(request, 'home.html', {'isWarning':isWarning.objects.last().isWarning, 'Hats' : Hats, 'SensorValues' : SensorValues, 'weather' : weather, 'max_temperature' : max_temperature, 'max_voc' : max_voc, 'max_humid' : max_humid, 'max_co2': max_co2, 'max_air_quality': max_air_quality})
 
 def oauth(request): #for kakao api
     code = request.GET['code']
@@ -132,16 +134,23 @@ def oauth(request): #for kakao api
     return redirect('/home')
 
 def alert(request):
-    """ Pelion 전송 """
-    api = ConnectAPI()
-    devices = api.list_connected_devices().data
-    WRITEABLE_RESOURCE = ""
-    for device in devices:
-        api.set_resource_value(device_id=device.id,
-                               resource_path=WRITEABLE_RESOURCE,
-                               resource_value='1')
-    """ Pelion 전송 """
-
+    #try:
+    #    api = ConnectAPI()
+    #    api.start_notifications()
+    #    devices = api.list_connected_devices().data
+    #    if not devices:
+    #        raise Exception("No connected devices")
+    #    WRITEABLE_RESOURCE = "/1200/0/5501"
+    #    for device in devices:
+    #        try:
+    #            api.set_resource_value(device_id=device.id,
+    #                                resource_path=WRITEABLE_RESOURCE,
+    #                                resource_value='1')
+    #        except:
+    #            continue
+    #except:
+    #    print("[PELION] ERROR")
+    
     """ 안드로이드 앱 푸시알람 전송 """
     # fcm 푸시 메세지 요청 주소
     url = 'https://fcm.googleapis.com/fcm/send'
@@ -185,6 +194,30 @@ def alert(request):
     return redirect(login_request_uri)
 
 
+def normal(request):
+    try:
+        """ Pelion 전송 """
+        api = ConnectAPI()
+        api.start_notifications()
+        devices = api.list_connected_devices().data
+        if not devices:
+            raise Exception("No connected devices")
+        WRITEABLE_RESOURCE = "/1200/0/5501"
+        for device in devices:
+            try:
+                api.set_resource_value(device_id=device.id,
+                                    resource_path=WRITEABLE_RESOURCE,
+                                    resource_value='0')
+            except:
+                continue
+        """ Pelion 전송 """
+    except:
+        print("[PELION] ERROR")
+    iw = isWarning.objects.last()
+    iw.isWarning = 0
+    iw.save()
+    return redirect('/home')
+
 def location(request):
     Hats = Hat.objects
     SensorValues = SensorValue.objects
@@ -198,14 +231,18 @@ def location(request):
         'description' : city_weather['weather'][0]['description'],
         'icon' : city_weather['weather'][0]['icon']
     }
-    return render(request, 'location.html', {'weather' : weather, 'Hats': Hats, 'SensorValues':SensorValues})
+    return render(request, 'location.html', {'isWarning':isWarning.objects.last().isWarning, 'weather' : weather, 'Hats': Hats, 'SensorValues':SensorValues})
 
 
 def statistics(request):
     SensorValues = SensorValue.objects.order_by('-recordtime')[:10]
-    max_temperature = SensorValue.objects.aggregate(Max('temperature'))
-    max_voc = SensorValue.objects.aggregate(Max('voc'))
-    max_humid = SensorValue.objects.aggregate(Max('humid'))
+    #max_temperature = SensorValue.objects.aggregate(Max('temperature'))
+    max_temperature = SensorValue.objects.order_by('-recordtime')[:10].aggregate(Max('temperature'))
+    max_voc = SensorValue.objects.order_by('-recordtime')[:10].aggregate(Max('voc'))
+    max_humid = SensorValue.objects.order_by('-recordtime')[:10].aggregate(Max('humid'))
+    max_co2 = SensorValue.objects.order_by('-recordtime')[:10].aggregate(Max('co2'))
+    max_air_quality = SensorValue.objects.order_by('-recordtime')[:10].aggregate(Max('air_quality'))
+
     url = 'http://api.openweathermap.org/data/2.5/weather?q={}&units=imperial&appid=08a543cc6623032ae7fe6365a5c9b994'
     city = 'Republic of Korea'
     city_weather = requests.get(url.format(city)).json() #request the API data and convert the JSON to Python data types
@@ -217,16 +254,16 @@ def statistics(request):
         'description' : city_weather['weather'][0]['description'],
         'icon' : city_weather['weather'][0]['icon']
     }
-    return render(request, 'statistics.html', {'SensorValues' : SensorValues, 'weather' : weather, 'max_temperature' : max_temperature, 'max_voc' : max_voc, 'max_humid' : max_humid})
+    return render(request, 'statistics.html', {'isWarning':isWarning.objects.last().isWarning, 'SensorValues' : SensorValues, 'weather' : weather, 'max_temperature' : max_temperature, 'max_voc' : max_voc, 'max_humid' : max_humid, 'max_co2': max_co2, 'max_air_quality': max_air_quality})
 
 def device_list(request):
     Hats = Hat.objects
-    return render(request, 'device_list.html', {'Hats':Hats})
+    return render(request, 'device_list.html', {'isWarning':isWarning.objects.last().isWarning, 'Hats':Hats})
 
 def device_info(request, hat_id):
     hat = Hat.objects.all().get(id = hat_id)
     SensorValues = SensorValue.objects.all().filter(owner=hat)
-    return render(request, 'device_info.html', {'hat':hat, 'SensorValues':SensorValues})
+    return render(request, 'device_info.html', {'isWarning':isWarning.objects.last().isWarning, 'hat':hat, 'SensorValues':SensorValues})
 
 ''' 혁수가 보기 편할려고 추가함.
     class Hat(models.Model):
@@ -250,4 +287,4 @@ def device_info(request, hat_id):
 '''
 
 def criteria(request):
-    return render(request, 'criteria.html', {})
+    return render(request, 'criteria.html', {'isWarning':isWarning.objects.last().isWarning})

@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load extra_filter %}
 {% block title %}안전 Hat - 센서 통계{% endblock %}
     <link href="{% static 'vendor/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet">
 {% block content %}
@@ -8,20 +9,21 @@
     <!-- 그래프 영역 -->
     <!-- 온도 -->
     <div> 
-      {% with co2=max_temperature.temperature__max %}
+      {% with co2=max_temperature.temperature__max|get_max_temperature %}
+      {% with value=max_temperature.temperature__max %}
       <div id="test" data-val="1"></div>
-      <h4 class="small font-weight-bold">온도 <span class="float-right">{{co2}}%</span></h4>
+      <h4 class="small font-weight-bold">온도 <span class="float-right">{{value}}도</span></h4>
         <div class="progress mb-4">
-      {% if co2 < 20 %}
-        <div class="progress-bar bg-normal" role="progressbar" style="width: {{co2}}%" aria-valuenow="20"
+      {% if value < -15 %}
+        <div class="progress-bar bg-danger" role="progressbar" style="width: {{co2}}%" aria-valuenow="20"
           aria-valuemin="0" aria-valuemax="100"></div>
-      {% elif co2 < 40 %}
-      <div class="progress-bar bg-success" role="progressbar" style="width: {{co2}}%" aria-valuenow="20"
+      {% elif value < -12 %}
+        <div class="progress-bar bg-warning" role="progressbar" style="width: {{co2}}%" aria-valuenow="20"
+          aria-valuemin="0" aria-valuemax="100"></div>
+      {% elif value < 33 %}
+      <div class="progress-bar bg-normal" role="progressbar" style="width: {{co2}}%" aria-valuenow="20"
       aria-valuemin="0" aria-valuemax="100"></div>
-      {% elif co2 < 60 %}
-      <div class="progress-bar bg-info" role="progressbar" style="width: {{co2}}%" aria-valuenow="20"
-      aria-valuemin="0" aria-valuemax="100"></div>
-      {% elif co2 < 80 %}
+      {% elif value < 35 %}
       <div class="progress-bar bg-warning" role="progressbar" style="width: {{co2}}%" aria-valuenow="20"
       aria-valuemin="0" aria-valuemax="100"></div>
       {% else %}
@@ -29,26 +31,28 @@
       aria-valuemin="0" aria-valuemax="100"></div>
       {% endif %}
       {% endwith %}
+      {% endwith %}
     </div>
     </div>
     
     <!-- VOC -->
     <div> 
-      {% with co2=max_voc.voc__max %}
-  
+      {% with co2=max_voc.voc__max|get_max_tvoc %}
+      {% with value=max_voc.voc__max %}
+      
     <div id="test" data-val="1"></div>
-      <h4 class="small font-weight-bold">휘발성유기화합물 <span class="float-right">{{co2}}%</span></h4>
+      <h4 class="small font-weight-bold">TVOC <span class="float-right">{{value}}ppb</span></h4>
       <div class="progress mb-4">
-      {% if co2 < 20 %}
+      {% if value < 200 %}
         <div class="progress-bar bg-normal" role="progressbar" style="width: {{co2}}%" aria-valuenow="20"
           aria-valuemin="0" aria-valuemax="100"></div>
-      {% elif co2 < 40 %}
+      {% elif value < 250 %}
       <div class="progress-bar bg-success" role="progressbar" style="width: {{co2}}%" aria-valuenow="20"
       aria-valuemin="0" aria-valuemax="100"></div>
-      {% elif co2 < 60 %}
+      {% elif value < 500 %}
       <div class="progress-bar bg-info" role="progressbar" style="width: {{co2}}%" aria-valuenow="20"
       aria-valuemin="0" aria-valuemax="100"></div>
-      {% elif co2 < 80 %}
+      {% elif value < 1000 %}
       <div class="progress-bar bg-warning" role="progressbar" style="width: {{co2}}%" aria-valuenow="20"
       aria-valuemin="0" aria-valuemax="100"></div>
       {% else %}
@@ -57,30 +61,79 @@
       {% endif %}
     </div>
     {% endwith %}
+    {% endwith %}
     </div>
-
-     <!-- 습도 -->
-     <div> 
-      {% with co2=max_humid.humid__max %}
+    <!-- co2 -->
+    <div> 
+      {% with co2=max_co2.co2__max|get_max_co2 %} <!--여기 바꾸어야 함-->
+      {% with value=max_co2.co2__max %} <!--여기 바꾸어야 함-->
     <div id="test" data-val="1"></div>
-      <h4 class="small font-weight-bold">습도 <span class="float-right">{{co2}}%</span></h4>
+      <h4 class="small font-weight-bold">이산화탄소 <span class="float-right">{{value}}ppm</span></h4>
       <div class="progress mb-4">
-      {% if co2 < 20 %}
+      {% if value < 450 %}
         <div class="progress-bar bg-normal" role="progressbar" style="width: {{co2}}%" aria-valuenow="20"
           aria-valuemin="0" aria-valuemax="100"></div>
-      {% elif co2 < 40 %}
+      {% elif value < 1000 %}
       <div class="progress-bar bg-success" role="progressbar" style="width: {{co2}}%" aria-valuenow="20"
       aria-valuemin="0" aria-valuemax="100"></div>
-      {% elif co2 < 60 %}
+      {% elif value < 2000 %}
       <div class="progress-bar bg-info" role="progressbar" style="width: {{co2}}%" aria-valuenow="20"
       aria-valuemin="0" aria-valuemax="100"></div>
-      {% elif co2 < 80 %}
+      {% elif value < 5000 %}
       <div class="progress-bar bg-warning" role="progressbar" style="width: {{co2}}%" aria-valuenow="20"
       aria-valuemin="0" aria-valuemax="100"></div>
       {% else %}
       <div class="progress-bar bg-danger" role="progressbar" style="width: {{co2}}%" aria-valuenow="20"
       aria-valuemin="0" aria-valuemax="100"></div>
       {% endif %}
+    </div>
+    {% endwith %}
+    {% endwith %}
+    </div>
+    <!-- Air Quality -->
+    <div> 
+      {% with co2=max_air_quality.air_quality__max|get_max_air_quality %}
+      {% with value=max_air_quality.air_quality__max %}
+    <div id="test" data-val="1"></div>
+      <h4 class="small font-weight-bold">Air Quality <span class="float-right">{{value}}AQHI</span></h4>
+      <div class="progress mb-4">
+      {% if value < 30 %}
+        <div class="progress-bar bg-normal" role="progressbar" style="width: {{co2}}%" aria-valuenow="20"
+          aria-valuemin="0" aria-valuemax="100"></div>
+      {% elif value < 60 %}
+      <div class="progress-bar bg-info" role="progressbar" style="width: {{co2}}%" aria-valuenow="20"
+      aria-valuemin="0" aria-valuemax="100"></div>
+      {% elif value < 70 %}
+      <div class="progress-bar bg-warning" role="progressbar" style="width: {{co2}}%" aria-valuenow="20"
+      aria-valuemin="0" aria-valuemax="100"></div>
+      {% else %}
+      <div class="progress-bar bg-danger" role="progressbar" style="width: {{co2}}%" aria-valuenow="20"
+      aria-valuemin="0" aria-valuemax="100"></div>
+      
+      {% endif %}
+    </div>
+    {% endwith %}
+    {% endwith %}
+    </div>
+
+     <!-- 습도 finished -->
+     <div> 
+      {% with co2=max_humid.humid__max|get_max_humid %}
+      {% with value=max_humid.humid__max %}
+    <div id="test" data-val="1"></div>
+      <h4 class="small font-weight-bold">습도 <span class="float-right">{{co2}}g/m3</span></h4>
+      <div class="progress mb-4">
+      {% if value < 25 %}
+        <div class="progress-bar bg-danger" role="progressbar" style="width: {{co2}}%" aria-valuenow="20"
+          aria-valuemin="0" aria-valuemax="100"></div>
+      {% elif value < 35 %}
+      <div class="progress-bar bg-warning" role="progressbar" style="width: {{co2}}%" aria-valuenow="20"
+      aria-valuemin="0" aria-valuemax="100"></div>
+      {% else %}
+      <div class="progress-bar success" role="progressbar" style="width: {{co2}}%" aria-valuenow="20"
+      aria-valuemin="0" aria-valuemax="100"></div>
+      {% endif %}
+      {% endwith %}
       {% endwith %}
     </div>
   </div>
@@ -136,6 +189,19 @@
         <!-- 온도Chart -->
         <div class="card shadow mb-4">
           <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">CO2</h6>
+          </div>
+          <div class="card-body">
+            <div class="chart-area">
+              <canvas id="myChart5"  class="charths-render-monitor"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-6 col-lg-3">
+        <!-- 온도Chart -->
+        <div class="card shadow mb-4">
+          <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">공기 오염도</h6>
           </div>
           <div class="card-body">
@@ -173,23 +239,12 @@
                 <th>측정 시간</th>
                 <th>GPS</th>
                 <th>온도</th>
-                <th>휘발성유기화합물</th>
+                <th>TVOC</th>
                 <th>습도</th>
-                <th>기울기(Gyro)</th>
+                <th>CO2</th>
+                <th>Air Quality</th>
               </tr>
             </thead>
-            <!-- tfoot
-            <tfoot>
-              <tr>
-                <th>Name</th>
-                <th>Position</th>
-                <th>Office</th>
-                <th>Age</th>
-                <th>Start date</th>
-                <th>Salary</th>
-              </tr>
-            </tfoot>
-            -->
             <tbody>
               
               {% for SensorValue in SensorValues.all %}
@@ -201,7 +256,8 @@
                 <td>{{SensorValue.temperature}}</td>
                 <td>{{SensorValue.voc}}</td>
                 <td>{{SensorValue.humid}}</td>
-                <td>{{SensorValue.gyro}}</td>
+                <td>{{SensorValue.co2}}</td>
+                <td>{{SensorValue.air_quality}}</td>
               </tr>
               {% endfor %}
             </tbody>
@@ -368,6 +424,50 @@
                 backgroundColor: 'transparent',
                 borderColor: 'rgb(255, 191, 0)',
                 data: [{% for SensorValue in SensorValues.all reversed %}{{ SensorValue.air_quality }},{% endfor %}]
+            }]
+        },
+        // Configuration options go here
+        options: {
+          maintainAspectRatio: false,
+          layout: {
+            padding: {
+              left: 10,
+              right: 25,
+              top: 25,
+              bottom: 0
+            }
+          },
+          responsive: true,
+          scales: {
+            yAxes: [{
+              ticks: {
+                beginAtZero: false
+              }
+            }]
+          },
+          legend: {
+              display: false
+          },
+        }
+    });
+    </script>
+    <!--다섯번째 차트-->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0">
+    var ctx = document.getElementById('myChart5');
+  </script>
+  <script>
+    var ctx = document.getElementById('myChart5').getContext('2d');
+    var chart = new Chart(ctx, {
+        // The type of chart we want to create
+        type: 'line',
+        // The data for our dataset
+        data: {
+            labels: ['90초 전', '80초 전', '70초 전', '60초 전', '50초 전', '40초 전', '30초 전', '20초 전', '10초 전', '현재'],
+            datasets: [{
+                label: 'My First dataset',
+                backgroundColor: 'transparent',
+                borderColor: 'rgb(255, 191, 0)',
+                data: [{% for SensorValue in SensorValues.all reversed %}{{ SensorValue.co2 }},{% endfor %}]
             }]
         },
         // Configuration options go here

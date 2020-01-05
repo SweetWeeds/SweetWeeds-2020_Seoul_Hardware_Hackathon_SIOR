@@ -151,9 +151,15 @@
         </button>
         <!-- Topbar Search -->
         <nav class="navbar">
+          {% if isWarning %}
+          <div class="dropdown-item" href="#" data-toggle="modal" data-target="#normalModal">
+            <span class=" d-sm-inline-block btn btn-sm btn-success shadow-sm">정상신호 전송</span>
+          </div>
+          {% else %}
           <div class="dropdown-item" href="#" data-toggle="modal" data-target="#emergencyModal">
             <span class=" d-sm-inline-block btn btn-sm btn-danger shadow-sm">비상신호 전송</span>
           </div>
+          {% endif %}
         </nav>
         <hidden>
         <div class="container d-none d-sm-block">
@@ -203,6 +209,21 @@
 
       </nav>
       <!-- End of Topbar -->
+  {% if isWarning %}
+    <!-- 프랑켄슈타인 emergencyModal-->
+    <div class="modal-dialog" role="document" tabindex="-1">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">경고!!</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          </button>
+        </div>
+        <div class="modal-body">위험신호 발생!!</div>
+        </div>
+      </div>
+      </div>
+    <div class="container-fluid">  
+  {% endif %}
 
 
       {% block content %}{% endblock %}
@@ -266,6 +287,24 @@
 
   </div>
   <!-- 프랑켄슈타인-->
+  <div class="modal fade" id="normalModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">정상 신호</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">정상 신호를 보내시겠습니까?</div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">취소</button>
+          <a class="btn btn-danger" href="{% url 'normal' %}">발송</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
   <!-- Bootstrap core JavaScript-->
   <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
   <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>

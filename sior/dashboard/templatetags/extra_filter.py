@@ -30,3 +30,23 @@ def get_last_one_hour_pos(hat):
         cnt += 1
     print(returnVal)
     return returnVal
+
+@register.filter
+def get_max_co2(val):
+    return val/10000*100
+
+@register.filter
+def get_max_tvoc(val):
+    return val/1200*100
+
+@register.filter
+def get_max_air_quality(val):
+    return val/10*100
+
+@register.filter
+def get_max_temperature(val):
+    return (val+30)/80*100
+
+@register.filter
+def get_max_humid(val):
+    return val/100*100

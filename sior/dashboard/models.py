@@ -37,6 +37,7 @@ class SensorValue(models.Model):
     gps_lng = models.FloatField(max_length = MAX_LEN, null = True, blank = True)
     gps_alt = models.FloatField(max_length = MAX_LEN, null = True, blank = True)
     voc = models.FloatField(null = True, blank = True)            # voc 값
+    co2 = models.FloatField(null = True, blank = True)            # co2 값
     air_quality = models.FloatField(null = True, blank = True)
     
 class SensorCriteria(models.Model):
@@ -55,3 +56,6 @@ class SensorCriteria(models.Model):
     air_quality_normal = models.FloatField(null = True, blank = True)
     air_quality_warning = models.FloatField(null = True, blank = True)
     air_quality_dangerous = models.FloatField(null = True, blank = True)
+
+class isWarning(models.Model):
+    isWarning = models.IntegerField(null = False, blank = True, default=0)
